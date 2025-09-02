@@ -22,9 +22,9 @@
     <main>
         <h2>Logged in as: [Player Name]</h1>
         <div>
-            <button>Free Play</button>
-            <button>Create Custom Game</button>
-            <button>Join Custom Game</button>
+            <button type="button">Free Play</button>
+            <button type="button">Create Custom Game</button>
+            <button type="button">Join Custom Game</button>
             <input type="text" value="Room Code">
             <hr>
         </div>
@@ -346,6 +346,16 @@
                     <td><button>Drop</button></td>
                 </tr>
             </table>
+        </div>
+        <div>
+            <hr>
+            <textarea cols="50" rows="5" wrap="soft" readonly="true">
+Zack: Wow this game is fun
+Jeff: Yeah, it is! This is my first time playing!
+            </textarea>
+            <br>
+            <input type="text" id="msgbox" placeholder="Chat Message...">
+            <input type="button" value="Send" for="msgbox">
         </div>
 
     </main>
