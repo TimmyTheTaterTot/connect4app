@@ -27,3 +27,6 @@ My application wll be a fun and interactive online app where anyone can play con
 
 [CSS Practice Code Pen](https://codepen.io/TimmyTheTaterTot/pen/pvgEeMN)\
 From this assignment I was able to learn a lot about styling from scratch with CSS. It really helped me get over a lot of the fear or hesitance that I have felt towards CSS in the past due to how overwhelming it felt with all the declarations and styles to memorize. I learned that if I have a good idea of what I want it to look like in the end, then I can effectively break down the task of creating that outcome into smaller, more manageable pieces, and end up creating the kind of finished product that I was looking for. I was able to liberally use Google to look up the names or usage of different things whenever I needed, so that helped a lot, and I know in the future I will likely use AI a good amount in order to have the best help possible with repetitive or tedious CSS styling.
+
+[Flexbox Practice Code Pen](https://codepen.io/TimmyTheTaterTot/pen/PwZKENo)
+From this assignment I learned more about nesting flexboxes and how to get text to align and position how I want it to.
