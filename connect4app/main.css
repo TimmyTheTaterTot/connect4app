@@ -2,3 +2,34 @@
     padding-inline: 10px;
     height: 35px;
 }
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-width: 375px;
+    min-height: 500px;
+}
+
+header {
+    flex: 0 73px;
+    background: #212529;
+}
+
+main {
+    flex: 1 calc(100vh - 114px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background: #6c757d;
+}
+
+footer {
+    flex: 0 41px;
+    background: #212529;
+}
+
+@media (max-width: 584px) {
+    main {
+        flex: 1 calc(100vh - 148px)
+    }
+}
