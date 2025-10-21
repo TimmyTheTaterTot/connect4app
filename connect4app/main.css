@@ -3,6 +3,10 @@
     height: 35px;
 }
 
+.bg-mid {
+    background: #495057
+}
+
 body {
     display: flex;
     flex-direction: column;
