@@ -30,3 +30,7 @@ From this assignment I was able to learn a lot about styling from scratch with C
 
 [Flexbox Practice Code Pen](https://codepen.io/TimmyTheTaterTot/pen/PwZKENo)
 From this assignment I learned more about nesting flexboxes and how to get text to align and position how I want it to.
+
+### CSS Deliverable
+
+From this assignment I gained a much greater understanding and level of comfort with using CSS to design and implement reactive, functional, and modern looking features. I am really starting to find a lot of enjoyment with using HTML and CSS to create a website that looks how I want it to look. I also found that I am most comfortable using a mix of Bootstrap and raw CSS to create my webpages, allowing me to benefit from the ease of Bootstrap and also the fine control of regular CSS.
