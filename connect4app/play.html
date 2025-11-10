@@ -36,10 +36,10 @@
     <main class="justify-content-start">
         <div class="p-3">
             <h2>Logged in as: [Player Name]</h2>
-            <div class="d-flex gap-2 align-items-center flex-nowrap">
-                <button class="btn btn-primary" type="button">Free Play</button>
-                <button class="btn btn-primary" type="button">Create Custom Game</button>
-                <div class="input-group" style="width: 400px;">
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <button class="btn btn-primary play-button" type="button">Free Play</button>
+                <button class="btn btn-primary play-button" type="button">Create Custom Game</button>
+                <div class="input-group flex-nowrap" style="width: 400px;">
                     <button class="btn text-white disabled input-group-text" type="button">Join Custom Game</button>
                     <input class="form-control" type="text" value="Room Code">
                 </div>
@@ -48,7 +48,7 @@
 
         <div class="mx-auto p-3 game-region justify-content-between">
             <div class="player-card-area">
-                <div class="rounded-4 p-3 bg-dark my-auto">
+                <div class="player-card rounded-4 p-3 bg-dark">
                     <h3 class="text-white">[Player Name]</h3>
                     <p class="text-white">Rating: 1200</p>
                     <inline class="player-tile-buttons">
@@ -56,7 +56,7 @@
                         <button class="btn btn-secondary">Add Friend</button>
                     </inline>
                 </div>
-                <div class="rounded-4 p-3 bg-dark my-auto">
+                <div class="player-card rounded-4 p-3 bg-dark">
                     <h3 class="text-white">[Player Name]</h3>
                     <p class="text-white">Rating: 1200</p>
                     <inline class="player-tile-buttons">
@@ -113,10 +113,10 @@
             </div>
             <div class="chat-box">
                 <div class="messages-area">
-                    <p>Zack: Wow this game is fun</p>
+                    <p><span style="color:dark">Zack:</span> Wow this game is fun</p>
                     <p>Jeff: Yeah, it is! This is my first time playing!</p>
                 </div>
-                <div class="input-group" style="width: 400px;">
+                <div class="input-group">
                     <input class="form-control" type="text" value="Chat Message...">
                     <button class="btn btn-light" type="button">Send</button>
                 </div>

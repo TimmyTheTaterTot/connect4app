@@ -1,19 +1,23 @@
 .game-region {
     display: flex;
     flex-direction: row;
-
 }
 
 .player-card-area {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0 50px;
+    margin: 0 3vw
+}
+
+.player-card {
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .game-board {
     width: 30vw;
-    aspect-ratio: 1/1;
+    height: 30vw;
     min-width: 325px;
     min-height: 325px;
     max-width: min(60vmin, 1000px);
@@ -37,11 +41,45 @@
 
 .chat-box {
     align-self: last baseline;
-    margin: 50px;
-    min-width: 150px;
+    margin: 50px 0px 50px 3vw;
+    min-width: 200px;
     max-width: 30vw;
+    width: 25vw;
 }
 
-@media (max-width: 1215px) {
-    
+@media (max-width: 925px) {
+    .player-tile-buttons {
+        display: none;
+    }
+}
+
+@media (orientation: portrait), (max-width: 780px) {
+    .game-region{
+        flex-direction: column;
+    }
+
+    .player-card-area{
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .player-card {
+        margin-right: 1.5vw;
+        margin-left: auto;
+        margin-bottom: 2vh;
+    }
+
+    .player-card-area .player-card:last-child {
+        margin-right: auto;
+        margin-left: 1.5vw;
+    }
+
+    .game-board {
+        align-self: center;
+    }
+
+    .chat-box {
+        width: 80vw;
+        max-width: min(80vw, 500px);
+    }
 }
