@@ -1,12 +1,12 @@
 .info-box{
     max-width: 50vw;
-    min-width: 500px;
+    min-width: 375px;
     margin-bottom: 4vh;
 }
 
 .picture{
     width: 30vw;
-    min-width: 400px;
+    min-width: 375px;
     margin-bottom: 3vh;
     margin-top: 3vh;
 }
