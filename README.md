@@ -34,3 +34,7 @@ From this assignment I learned more about nesting flexboxes and how to get text 
 ### CSS Deliverable
 
 From this assignment I gained a much greater understanding and level of comfort with using CSS to design and implement reactive, functional, and modern looking features. I am really starting to find a lot of enjoyment with using HTML and CSS to create a website that looks how I want it to look. I also found that I am most comfortable using a mix of Bootstrap and raw CSS to create my webpages, allowing me to benefit from the ease of Bootstrap and also the fine control of regular CSS.
+
+### Vite Introduction
+
+I really enjoyed seeing how the web project comes together so well with build tools such as Vite, running on top of frameworks that change the entire structure and nature of the web applications that they support. It is a whole different way to manage web development, and one that I frankly enjoy a lot more, because it can ideally help me get away from the nitty gritty tediousness that is sometimes present with raw html, css, and js.
