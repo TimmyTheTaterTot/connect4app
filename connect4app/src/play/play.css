@@ -1,3 +1,7 @@
+* {
+    color: #212529;
+}
+
 .game-region {
     display: flex;
     flex-direction: row;
@@ -22,7 +26,7 @@
     min-height: 325px;
     max-width: min(60vmin, 1000px);
     max-height: min(60vmin, 1000px);
-    box-shadow: 10px 10px 20px;
+    box-shadow: 10px 10px 20px #212529;
 }
 
 .game-spaces-container {
