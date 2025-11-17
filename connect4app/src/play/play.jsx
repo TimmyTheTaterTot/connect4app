@@ -84,8 +84,8 @@ export function Play() {
             </div>
             <div className="chat-box">
                 <div className="messages-area">
-                    <p><span style={{ color: "dark" }}>Zack:</span> Wow this game is fun</p>
-                    <p>Jeff: Yeah, it is! This is my first time playing!</p>
+                    <p className="text-dark">Zack: Wow this game is fun</p>
+                    <p className="text-dark">Jeff: Yeah, it is! This is my first time playing!</p>
                 </div>
                 <div className="input-group">
                     <input className="form-control" type="text" value="Chat Message..." />
