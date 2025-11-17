@@ -38,3 +38,7 @@ From this assignment I gained a much greater understanding and level of comfort 
 ### Vite Introduction
 
 I really enjoyed seeing how the web project comes together so well with build tools such as Vite, running on top of frameworks that change the entire structure and nature of the web applications that they support. It is a whole different way to manage web development, and one that I frankly enjoy a lot more, because it can ideally help me get away from the nitty gritty tediousness that is sometimes present with raw html, css, and js.
+
+### Router Introduction
+
+This assignment actually mainly gave me some hands on experience with debugging my toolchain and with understanding the different features and use cases of Vite and NPM run vs NPX and how they all work together. I have really been able to wrap my head pretty well around React components and how to use them, so I am looking forward to implementing them into my website very soon.
