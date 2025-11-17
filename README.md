@@ -42,3 +42,7 @@ I really enjoyed seeing how the web project comes together so well with build to
 ### Router Introduction
 
 This assignment actually mainly gave me some hands on experience with debugging my toolchain and with understanding the different features and use cases of Vite and NPM run vs NPX and how they all work together. I have really been able to wrap my head pretty well around React components and how to use them, so I am looking forward to implementing them into my website very soon.
+
+### Startup React Part 1
+
+This was a much smoother major assignment than the last few have been. It brought me a lot more into the familiar world of traditional coding skills and functions than the other assignments have, so I was able to get through it and figure out any errors without too much of a struggle. It was also really nice to see my experience in the previously learned skills really paying off to help me just debug and develop smoothly, with only minor pauses to go ask Google or an AI agent about an error or issue that I didn't understand. Overall it was a smooth and satisfying process and I am very happy with the results. I am also very excited to get going on the next steps of this project to make my game actually interactive.
