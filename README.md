@@ -46,3 +46,11 @@ This assignment actually mainly gave me some hands on experience with debugging 
 ### Startup React Part 1
 
 This was a much smoother major assignment than the last few have been. It brought me a lot more into the familiar world of traditional coding skills and functions than the other assignments have, so I was able to get through it and figure out any errors without too much of a struggle. It was also really nice to see my experience in the previously learned skills really paying off to help me just debug and develop smoothly, with only minor pauses to go ask Google or an AI agent about an error or issue that I didn't understand. Overall it was a smooth and satisfying process and I am very happy with the results. I am also very excited to get going on the next steps of this project to make my game actually interactive.
+
+### Javascript Practice
+
+[Arrays Practice](https://codepen.io/TimmyTheTaterTot/pen/qEZjKKK)
+This assignment helped me get comfortable with a lot of the fundamentals of Javascript. It seems like it is a pretty comofortable and intuitive language, especially coming from Python and C++ like I am.
+
+[Reactivity](https://codepen.io/TimmyTheTaterTot/pen/myPqNzE)
+From this assignment I got more familiar with applying the principles of Javascript to create reactive applications. I really like the modular design of React and can really see it being useful to me in my coding.
