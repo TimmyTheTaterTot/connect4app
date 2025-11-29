@@ -54,3 +54,7 @@ This assignment helped me get comfortable with a lot of the fundamentals of Java
 
 [Reactivity](https://codepen.io/TimmyTheTaterTot/pen/myPqNzE)
 From this assignment I got more familiar with applying the principles of Javascript to create reactive applications. I really like the modular design of React and can really see it being useful to me in my coding.
+
+### Simon React Part 2
+
+This assignment taught me a lot about putting together a more fleshed out app using Javascript and React. I have a better idea now about how each part of the program fits together to create the interactive, functional whole. I will definitely have to continue to refer back to the Simon startup app relatively frequently as I build the reactivity of my startup app, though I am optimistic about accomplishing my goals for this project.
