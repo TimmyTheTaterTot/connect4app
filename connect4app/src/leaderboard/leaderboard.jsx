@@ -15,7 +15,7 @@ export function Leaderboard() {
     if (scores.length > 0) {
         for (const [i, player] of scores.entries()) {
             scoresList.push(
-                <tr>
+                <tr key={i}>
                     <td>{i}</td>
                     <td>{player.name}</td>
                     <td>{player.elo}</td>

@@ -21,11 +21,11 @@ export function LoggedOut({ onLogin }) {
         <h1 className="text-light text-nowrap">Connect 4 Club Login</h1>
         <div className="input-group mb-3">
             <span className="input-group-text">Username:</span>
-            <input className="form-control" type="text" placeholder="example@email.com" />
+            <input className="form-control" onChange={(e) => setUsername(e.target.value)} type="text" placeholder="example@email.com" />
         </div>
         <div className="input-group mb-3">
             <span className="input-group-text">Password:</span>
-            <input className="form-control" type="password" placeholder="password" />
+            <input className="form-control" onChange={(e) => setPassword(e.target.value)} type="password" placeholder="password" />
         </div>
         <button className="btn btn-primary mx-auto px-4" onClick={ () => login() } disabled={ buttonsDisabled }>Login</button>
         <button className="btn bg-mid text-white mx-auto px-4" onClick={ () => createUser() } disabled={ buttonsDisabled }>Register</button>

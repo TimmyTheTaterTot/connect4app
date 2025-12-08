@@ -42,7 +42,16 @@ export default function App() {
             </header>
 
             <Routes>
-                <Route path="/" element={<Login />} exact />
+                <Route path="/" element={
+                    <Login 
+                    loginState={ loginState } 
+                    changeLoginState={(username, loginState) => {
+                        setUsername(username);
+                        setLoginState(loginState);
+                    }}
+                    username ={ username }
+                    />
+                } exact />
                 <Route path="/play" element={<Play />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/about" element={<About />} />
