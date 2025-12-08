@@ -10,6 +10,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
 export default function App() {
+    const [username, setUsername] = React.useState(localStorage.getItem('username') || '')
+    const [loginState, setLoginState] = React.useState(username ? true : false)
+
   return (
     <BrowserRouter>
         <div className="body bg-dark text-light">
@@ -22,12 +25,16 @@ export default function App() {
                     <li className="nav-item">
                         <NavLink to="" className="nav-link" aria-current="page">Login</NavLink>
                     </li> 
-                    <li className="nav-item">
-                        <NavLink to="play" className="nav-link">Play</NavLink>
-                    </li> 
-                    <li className="nav-item">
-                        <NavLink to="leaderboard" className="nav-link">Leaderboard</NavLink>
-                    </li>
+                    {loginState && (
+                        <li className="nav-item">
+                            <NavLink to="play" className="nav-link">Play</NavLink>
+                        </li>
+                    )}
+                    {loginState && (
+                        <li className="nav-item">
+                            <NavLink to="leaderboard" className="nav-link">Leaderboard</NavLink>
+                        </li>
+                    )}
                     <li className="nav-item">
                         <NavLink to="about" className="nav-link">About</NavLink>
                     </li> 
