@@ -26,7 +26,7 @@
     min-height: 325px;
     max-width: min(60vmin, 1000px);
     max-height: min(60vmin, 1000px);
-    box-shadow: 10px 10px 20px #212529;
+    box-shadow: -10px 10px 20px #212529;
 }
 
 .game-spaces-container {
@@ -41,6 +41,16 @@
     border-radius: 50%;
     background: #6c757d;
     aspect-ratio: 1/1;
+}
+
+.red-chip {
+  background: hsl(1deg, 85%, 54%);
+  background: linear-gradient(41deg, hsl(1deg, 85%, 40%) 0%, hsl(1deg, 85%, 54%) 20%, hsl(1deg, 85%, 56%) 60%, hsl(1deg, 85%, 90%) 100%);
+}
+
+.yellow-chip {
+  background: hsl(1deg, 85%, 54%);
+  background: linear-gradient(41deg, hsl(36deg, 85%, 40%) 0%, hsl(36deg, 85%, 54%) 20%, hsl(36deg, 85%, 56%) 60%, hsl(36deg, 85%, 90%) 100%);
 }
 
 .chat-box {

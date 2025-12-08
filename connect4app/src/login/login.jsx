@@ -4,8 +4,6 @@ import { LoggedOut } from './logged_out';
 import { LoggedIn } from './logged_in';
 
 export function Login({ loginState, changeLoginState, username }) {
-
-
   return (
     <main className="container-fluid text-center">
         <div className="bg-mid mx-auto p-5 rounded-4">

@@ -25,12 +25,12 @@ export default function App() {
                     <li className="nav-item">
                         <NavLink to="" className="nav-link" aria-current="page">Login</NavLink>
                     </li> 
-                    {loginState && (
+                    {loginState == true && (
                         <li className="nav-item">
                             <NavLink to="play" className="nav-link">Play</NavLink>
                         </li>
                     )}
-                    {loginState && (
+                    {loginState == true && (
                         <li className="nav-item">
                             <NavLink to="leaderboard" className="nav-link">Leaderboard</NavLink>
                         </li>
