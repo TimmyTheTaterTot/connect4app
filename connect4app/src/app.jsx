@@ -52,7 +52,7 @@ export default function App() {
                     username ={ username }
                     />
                 } exact />
-                <Route path="/play" element={<Play />} />
+                <Route path="/play" element={<Play username={ username } />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/about" element={<About />} />
                 <Route path="*" element={<NotFound />} />
