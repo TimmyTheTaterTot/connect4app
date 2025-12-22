@@ -53,14 +53,6 @@
   background: linear-gradient(41deg, hsl(36deg, 85%, 40%) 0%, hsl(36deg, 85%, 54%) 20%, hsl(36deg, 85%, 56%) 60%, hsl(36deg, 85%, 90%) 100%);
 }
 
-.chat-box {
-    align-self: last baseline;
-    margin: 50px 0px 50px 3vw;
-    min-width: 200px;
-    max-width: 30vw;
-    width: 25vw;
-}
-
 @media (max-width: 925px) {
     .player-tile-buttons {
         display: none;
@@ -90,10 +82,5 @@
 
     .game-board {
         align-self: center;
-    }
-
-    .chat-box {
-        width: 80vw;
-        max-width: min(80vw, 500px);
     }
 }

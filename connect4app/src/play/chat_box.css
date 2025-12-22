@@ -1,0 +1,29 @@
+.chat-box {
+    align-self: last baseline;
+    margin: 50px 0px 50px 3vw;
+    min-width: 200px;
+    max-width: 30vw;
+    width: 25vw;
+}
+
+.chat-message-event {
+    color: #212529;
+    border: 2px dotted lightblue
+}
+
+.game-update-event {
+    color: #212529;
+    border: 2px dotted lightcoral
+}
+
+.system-message-event {
+    color: #212529;
+    border: 2px dotted purple
+}
+
+@media (orientation: portrait), (max-width: 780px) {
+    .chat-box {
+        width: 80vw;
+        max-width: min(80vw, 500px);
+    }
+}

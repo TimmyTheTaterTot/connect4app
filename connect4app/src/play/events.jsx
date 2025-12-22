@@ -10,3 +10,5 @@ class Event {
         this.value = value;
     }
 }
+
+export { Event, EventType }
