@@ -16,7 +16,7 @@ export function ChatBox() {
         handleEvent(new Event(EventType.ChatMessage, 'Zack: Wow this game is fun'));
         handleEvent(new Event(EventType.ChatMessage, 'Jeff: Yeah, it is! This is my first time playing!'))
         handleEvent(new Event(EventType.GameUpdate, 'Zack placed their piece in column 4!'))
-        handleEvent(new Event(EventType.SystemMessage, 'Servers will shutdown in 5 minutes for sch'))
+        handleEvent(new Event(EventType.SystemMessage, 'Servers will shutdown in 5 minutes for scheduled maintenance'))
     }, []);
 
 
@@ -24,7 +24,9 @@ export function ChatBox() {
         const messagesArray = [];
         for (const [index, event] of events.entries()) {
             messagesArray.push(
-                <p key={index} className={event.type}>{event.value}</p>
+                <div key={index} className="chat-message-frame">
+                    <p className={event.type}>{event.value}</p>
+                </div>
             );
         }
         return messagesArray.reverse()

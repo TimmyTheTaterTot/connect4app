@@ -6,19 +6,26 @@
     width: 25vw;
 }
 
+.chat-message-frame {
+    background: #9fa6ac;
+    padding: 5px;
+    margin: 5px 0px;
+    border-radius: 10px;
+}
+
 .chat-message-event {
     color: #212529;
-    border: 2px dotted lightblue
+    margin: 0px;
 }
 
 .game-update-event {
     color: #212529;
-    border: 2px dotted lightcoral
+    margin: 0px;
 }
 
 .system-message-event {
     color: #212529;
-    border: 2px dotted purple
+    margin: 0px;
 }
 
 @media (orientation: portrait), (max-width: 780px) {
