@@ -3,3 +3,4 @@ Small Assignment Code
 .vscode
 */node_modules
 connect4app/deploy-startup.sh
+simon-*
