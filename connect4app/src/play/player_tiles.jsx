@@ -7,7 +7,11 @@ export function PlayerTile({ playerName }) {
 
     React.useEffect(() => {
         const info = JSON.parse(localStorage.getItem('playerInfo'));
-        setPlayerELO(info[playerName])
+        if (info && playerName in info) {
+            setPlayerELO(info[playerName])
+            return;
+        }
+        setPlayerELO("Unknown")
     }, [])
 
     return (

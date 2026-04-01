@@ -15,7 +15,7 @@ export function Play({ username }) {
         <div className="mx-auto p-3 game-region justify-content-between">
             <div className="player-card-area">
                 <PlayerTile playerName={ username } />
-                <PlayerTile playerName='opponent' />
+                <PlayerTile playerName="opponent" />
             </div>
             <GameBoard />
             <ChatBox />
