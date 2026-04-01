@@ -60,7 +60,7 @@ export default function App() {
 
             <footer className="py-2">
                 <div className="container d-flex justify-content-between align-items-center">
-                    <span className="text-white">© 2025 Zack Darling</span>
+                    <span className="text-white">© 2026 Zack Darling</span>
                     <NavLink to="https://github.com/TimmyTheTaterTot/connect4app" className="text-white" target="_blank" rel="noopener noreferrer">
                     GitHub
                     </NavLink>
