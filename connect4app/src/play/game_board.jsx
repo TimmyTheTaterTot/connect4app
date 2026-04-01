@@ -3,47 +3,59 @@ import React from 'react';
 import './play.css';
 
 export function GameBoard(){
-    const game_grid = Array.from({ length: 6 }, () => new Array(7).fill(null));
-    const board_spaces = buildBoardSpacesArray();
+    const ROWS = 7;
+    const COLS = 6;
+    const [gameGrid, setGameGrid] = React.useState(Array.from({ length: ROWS }, 
+        () => new Array(COLS).fill(null)));
 
     const [inputLocked, setInputLocked] = React.useState(true);
-    const [playerTurn, setPlayerTurn] = React.useState(0);
+    const [playerTurn, setPlayerTurn] = React.useState(true);
 
     function buildBoardSpacesArray () {
-        const board_spaces = [];
+        const grid = [];
 
-        for (let y = 6, i = 0; y >= 0; y--) {
-            for (let x = 0; x < 7; x++) {
-                board_spaces.push(<div className="board-space" key={i} x={x} y={y} onClick={() => {onSpacePressed(x, y)}}></div>);
+        for (let col = COLS-1, i = 0; col >= 0; col--) {
+            for (let row = 0; row < ROWS; row++) {
+                const chipClass = gameGrid[row][col] === null ? '' : gameGrid[row][col] ? 'red-chip' : 'yellow-chip';
+                grid.push(<div className={`board-space ${chipClass}`} key={i} x={row} y={col} 
+                    onClick={() => {onSpacePressed(row, col)}}></div>);
                 i++;
             }
         }
-        return board_spaces;
+        return grid;
     }
 
-    function onSpacePressed ({ x, y }) {
+    function onSpacePressed (x, y) {
+        if (!playerTurn || inputLocked) {
+            return;
+        }
         console.log(`tile ${x},${y} pressed`);
         // find topmost free space
         let free_space = false;
-        for (let i = 0; i < 7; i++) {
-            if (game_grid[x][i] == null) {
+        for (let i = 0; i < 6; i++) {
+            if (gameGrid[x][i] == null) {
                 y = i;
-                free_space = document.querySelector(`[x="${x}"][y=${y}]`);
+                free_space = true;
                 break;
             }
         }
-        if (!free_space) {
+        if (free_space === false) {
             return -1;
         }
 
-        game_grid[x][y] = playerTurn;
-        free_space.classList.add("red-chip");
+        setGameGrid((prevGrid) => {
+            let nextGrid = prevGrid.map((row) => [...row]);
+            nextGrid[x][y] = playerTurn;
+            return nextGrid;
+        })
     }
+
+    const boardSpaces = buildBoardSpacesArray();
 
     return (
         <div className="game-board bg-dark rounded-5">
             <div className="game-spaces-container p-3">
-                { board_spaces }
+                { boardSpaces }
             </div>
         </div>
     );
