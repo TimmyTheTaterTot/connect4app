@@ -8,7 +8,7 @@ export function GameBoard(){
     const [gameGrid, setGameGrid] = React.useState(Array.from({ length: ROWS }, 
         () => new Array(COLS).fill(null)));
 
-    const [inputLocked, setInputLocked] = React.useState(true);
+    const [inputLocked, setInputLocked] = React.useState(false);
     const [playerTurn, setPlayerTurn] = React.useState(true);
 
     function buildBoardSpacesArray () {
@@ -25,12 +25,7 @@ export function GameBoard(){
         return grid;
     }
 
-    function onSpacePressed (x, y) {
-        if (!playerTurn || inputLocked) {
-            return;
-        }
-        console.log(`tile ${x},${y} pressed`);
-        // find topmost free space
+    function findColumnTopSpace (x, y) {
         let free_space = false;
         for (let i = 0; i < 6; i++) {
             if (gameGrid[x][i] == null) {
@@ -42,6 +37,15 @@ export function GameBoard(){
         if (free_space === false) {
             return -1;
         }
+        return [x, y];
+    }
+
+    function onSpacePressed (x, y) {
+        if (!playerTurn || inputLocked) {
+            return;
+        }
+        console.log(`tile ${x},${y} pressed`);
+        [x, y] = findColumnTopSpace(x, y);
 
         setGameGrid((prevGrid) => {
             let nextGrid = prevGrid.map((row) => [...row]);

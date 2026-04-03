@@ -1,5 +1,5 @@
 import React from "react";
-import { Event, EventType } from './events';
+import { GameEventBroker, EventType } from './event_broker';
 
 import './chat_box.css';
 
@@ -13,10 +13,12 @@ export function ChatBox() {
     }
 
     React.useEffect(() => {
-        handleEvent(new Event(EventType.ChatMessage, 'Zack: Wow this game is fun'));
-        handleEvent(new Event(EventType.ChatMessage, 'Jeff: Yeah, it is! This is my first time playing!'))
-        handleEvent(new Event(EventType.GameUpdate, 'Zack placed their piece in column 4!'))
-        handleEvent(new Event(EventType.SystemMessage, 'Servers will shutdown in 5 minutes for scheduled maintenance'))
+        GameEventBroker.addHandler(handleEvent);
+
+        GameEventBroker.addEvent('Zack', EventType.ChatMessage, 'Wow this game is fun!');
+        GameEventBroker.addEvent('Jeff', EventType.ChatMessage, 'Yeah, it is! This is my first time playing!');
+        GameEventBroker.addEvent('GameMaster', EventType.ChatMessage, 'Zack placed their piece in column 4!');
+        GameEventBroker.addEvent('System', EventType.ChatMessage, 'Servers will shutdown in 5 minutes for scheduled maintenance');
     }, []);
 
 
