@@ -1,7 +1,8 @@
 const EventType = {
     ChatMessage: 'chat-message-event',
-    GameUpdate: 'game-update-event',
-    SystemMessage: 'system-message-event'
+    SystemMessage: 'system-message-event',
+    PlayerMove: 'player-move-event',
+    GameUpdate: 'game-update-event'
 };
 
 class Event {

@@ -5,6 +5,7 @@ import './chat_box.css';
 
 export function ChatBox() {
     const [events, setEvents] = React.useState([])
+    const [chatMessage, setChatMessage] = React.useState('')
 
     function handleEvent(event) {
         setEvents((prev) => {
@@ -27,7 +28,7 @@ export function ChatBox() {
         for (const [index, event] of events.entries()) {
             messagesArray.push(
                 <div key={index} className="chat-message-frame">
-                    <p className={event.type}>{event.value}</p>
+                    <p className={event.type}>{event.from}: {event.value}</p>
                 </div>
             );
         }
@@ -37,11 +38,15 @@ export function ChatBox() {
     return (
         <div className="chat-box">
             <div className="messages-area">
-                { buildMessagesArray() }
+                <div className="messages-inner">
+                    { buildMessagesArray() }
+                </div>
             </div>
             <div className="input-group">
-                <input className="form-control" type="text" value="Chat Message..." />
-                <button className="btn btn-light" type="button">Send</button>
+                <input className="form-control" type="text" placeholder='Chat Message...' 
+                onChange={(msg) => setChatMessage(msg.target.value)}/>
+                <button className="btn btn-light" type="button" 
+                onClick={() => GameEventBroker.addEvent('Zack', EventType.ChatMessage, chatMessage)}>Send</button>
             </div>
         </div>
     );
