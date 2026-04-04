@@ -3,7 +3,7 @@ import { GameEventBroker, EventType } from './event_broker';
 
 import './chat_box.css';
 
-export function ChatBox() {
+export function ChatBox({ playerName }) {
     const [events, setEvents] = React.useState([])
     const [chatMessage, setChatMessage] = React.useState('')
 
@@ -46,7 +46,7 @@ export function ChatBox() {
                 <input className="form-control" type="text" placeholder='Chat Message...' 
                 onChange={(msg) => setChatMessage(msg.target.value)}/>
                 <button className="btn btn-light" type="button" 
-                onClick={() => GameEventBroker.addEvent('Zack', EventType.ChatMessage, chatMessage)}>Send</button>
+                onClick={() => GameEventBroker.addEvent(playerName, EventType.ChatMessage, chatMessage)}>Send</button>
             </div>
         </div>
     );
