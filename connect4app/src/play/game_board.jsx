@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { GameEventBroker, EventType } from './event_broker';
+
 import './play.css';
 
 const ROWS = 7;
@@ -20,6 +22,52 @@ function findColumnTopSpace (x, y, gameGrid) {
         return [x, y];
     }
 
+    function checkWinInDir (x, y, xdir, ydir, gameGrid, playerTurn) {
+        if (x + xdir < 0 || x + xdir > ROWS - 1 
+            || y + ydir < 0 || y + ydir > COLS - 1) {
+            return 0;
+        }
+
+        if (gameGrid[x + xdir][y + ydir] === playerTurn) {
+            return 1 + checkWinInDir(x + xdir, y + ydir, xdir, ydir, gameGrid, playerTurn);
+        }
+
+        return 0;
+    }
+
+    function checkForWin (x, y, gameGrid, playerTurn) {
+        // check for horizontal win
+        if (1 + checkWinInDir(x, y, 1, 0, gameGrid, playerTurn) 
+              + checkWinInDir(x, y, -1, 0, gameGrid, playerTurn) > 3) {
+            console.log("horizontal win!");
+            return "horizontal win";
+        }
+
+        // check for vertical win
+        if (1 + checkWinInDir(x, y, 0, 1, gameGrid, playerTurn) 
+              + checkWinInDir(x, y, 0, -1, gameGrid, playerTurn) > 3) {
+            console.log("vertical win!");
+            return "vertical win";
+        }
+
+        // check for '/' win
+        if (1 + checkWinInDir(x, y, 1, 1, gameGrid, playerTurn) 
+              + checkWinInDir(x, y, -1, -1, gameGrid, playerTurn) > 3) {
+            console.log("/ win!");
+            return "/ win";
+        }
+
+        // check for '\' win
+        if (1 + checkWinInDir(x, y, 1, -1, gameGrid, playerTurn) 
+              + checkWinInDir(x, y, -1, 1, gameGrid, playerTurn) > 3) {
+            console.log("\\ win!");
+            return "\\ win";
+        }
+
+        return false;
+    }
+
+// TODO: Game win logic
 export function GameBoard(){
     const [gameGrid, setGameGrid] = React.useState(Array.from({ length: ROWS }, 
         () => new Array(COLS).fill(null)));
@@ -62,6 +110,14 @@ export function GameBoard(){
             nextGrid[x][y] = playerTurn;
             return nextGrid;
         })
+        const winCheck = checkForWin(x, y, gameGrid, playerTurn);
+        if (winCheck) {
+            GameEventBroker.addEvent('System', EventType.GameUpdate, 
+            playerTurn ? 'Congratulations! You won!' : 'Opponent won. Better luck next time.');
+            setInputLocked(true);
+            setPlayerTurn(true);
+            return;
+        }
         setPlayerTurn(!playerTurn);
     }
 
