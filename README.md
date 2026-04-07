@@ -58,3 +58,7 @@ From this assignment I got more familiar with applying the principles of Javascr
 ### Simon React Part 2
 
 This assignment taught me a lot about putting together a more fleshed out app using Javascript and React. I have a better idea now about how each part of the program fits together to create the interactive, functional whole. I will definitely have to continue to refer back to the Simon startup app relatively frequently as I build the reactivity of my startup app, though I am optimistic about accomplishing my goals for this project.
+
+### Startup React Part 2
+
+This assignment gave me the most trouble of any so far. It just took quite a while to actually wrap my head around the way that all the different technologies in my frontend stack work together to create a functional whole. Once I got past that part, and was able to understand and take advantage of how things work together, it was really fun to see the core technologies really come together.
