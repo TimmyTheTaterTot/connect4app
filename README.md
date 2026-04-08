@@ -62,3 +62,11 @@ This assignment taught me a lot about putting together a more fleshed out app us
 ### Startup React Part 2
 
 This assignment gave me the most trouble of any so far. It just took quite a while to actually wrap my head around the way that all the different technologies in my frontend stack work together to create a functional whole. Once I got past that part, and was able to understand and take advantage of how things work together, it was really fun to see the core technologies really come together.
+
+### Promises, Async/Await, and Fetch
+
+[Promises Codepen](https://codepen.io/TimmyTheTaterTot/pen/QwKBZxX)
+[Async/Await Codepen](https://codepen.io/TimmyTheTaterTot/pen/yyaxerQ)
+[Fetch Codepen](https://codepen.io/TimmyTheTaterTot/pen/raMZewN)
+
+These assignments took a bit for me to wrap my head around. I feel like compared to C or even Python, Javascript has many more systems that have strange feeling abstractions that are the way they are due to the antiquated technology that they sit upon. However, after wrestling with the code and talking to the AI for a bit, I was able to adequately figure things out and understand how these systems work to help create an awesome final product.
