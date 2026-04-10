@@ -3,6 +3,8 @@ import React from 'react';
 import { LoggedOut } from './logged_out';
 import { LoggedIn } from './logged_in';
 
+// TODO: visual cue when login fails
+// TODO: configure game results sending
 export function Login({ loginState, changeLoginState, username }) {
   return (
     <main className="container-fluid text-center">
