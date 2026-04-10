@@ -8,12 +8,36 @@ export function LoggedOut({ onLogin }) {
 
     async function login() {
         localStorage.setItem('username', username);
-        onLogin(username);
+        const res = await fetch('/api/auth', {
+            method: 'PUT',
+            body: JSON.stringify({ username: username, password: password}),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        });
+        if (res.ok) {
+            onLogin(username);
+        } else {
+            const error = await res.json();
+            setDisplayError(`⚠ Error: ${error.msg}`);
+        }
     }
 
     async function createUser() {
         localStorage.setItem('username', username);
-        onLogin(username)
+        const res = await fetch('/api/auth', {
+            method: 'POST',
+            body: JSON.stringify({ username: username, password: password}),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        });
+        if (res.ok) {
+            onLogin(username);
+        } else {
+            const error = await res.json();
+            setDisplayError(`⚠ Error: ${error.msg}`);
+        }
     }
 
     return (

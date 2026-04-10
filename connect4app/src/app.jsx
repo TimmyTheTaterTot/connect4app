@@ -10,8 +10,22 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
 
 export default function App() {
-    const [username, setUsername] = React.useState(localStorage.getItem('username') || '')
-    const [loginState, setLoginState] = React.useState(username ? true : false)
+    const [username, setUsername] = React.useState('')
+    const [loginState, setLoginState] = React.useState(false)
+
+    React.useEffect(() => {(async () => {
+        const res = await fetch('/api/auth', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json'
+            }
+        });
+        await res.json();
+        if (res.ok) {
+            setUsername(res.username);
+            setLoginState(true);
+        }
+    })()}, []);
 
   return (
     <BrowserRouter>

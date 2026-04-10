@@ -8,7 +8,15 @@ export function LoggedIn({ username, onLogout }) {
 
     async function logout() {
         localStorage.removeItem('username');
-        onLogout();
+        const res = await fetch('/api/auth', {
+            method: 'DELETE',
+        });
+        if (res.ok) {
+            onLogout();
+        } else {
+            const error = await res.json();
+            setDisplayError(`⚠ Error: ${error.msg}`);
+        }
     }
 
     return (

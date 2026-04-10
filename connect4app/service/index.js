@@ -12,6 +12,16 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 const users = [];
 const matchResults = [];
 
+// Custom Middleware
+const getAuthState = async (req, res, next) => {
+    const user = await getUser('authTokens', req.cookies[authCookieName]);
+    if (user) {
+        next();
+    } else {
+        res.status(401).send({ msg: 'Unauthorized' });
+    }
+}
+
 app.use(express.json()); // middleware to auto parse json http responses
 app.use(cookieParser()); // middlware to work with cookies
 app.use(express.static('public')); // middleware to serve up static files from the 'public' directory
@@ -73,16 +83,6 @@ apiRouter.post('/matches', getAuthState, (req, res) => {
     matchResults.push(req.body);
     res.status(204).send({});
 })
-
-// Custom Middleware
-const getAuthState = async (req, res, next) => {
-    const user = await getUser('authTokens', req.cookies[authCookieName]);
-    if (user) {
-        next();
-    } else {
-        res.status(401).send({ msg: 'Unauthorized' });
-    }
-}
 
 // Helper functions
 async function getUser(field, value) {
