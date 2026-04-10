@@ -4,6 +4,8 @@ const express = require('express');
 const uuid = require('uuid');
 const app = express();
 
+const authCookieName = 'authToken';
+
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
 // temp database
@@ -15,49 +17,49 @@ app.use(cookieParser()); // middlware to work with cookies
 app.use(express.static('public')); // middleware to serve up static files from the 'public' directory
 
 // Router for service endpoints
-var apiRouter = express.Router();
+const apiRouter = express.Router();
 app.use(`/api`, apiRouter);
 
 // Login route
 apiRouter.put('/auth', async (req, res) => {
-    const user = await getUser(username, req.body.username);
-    if (user && bcrypt.compare(req.body.password, user.passwordHash)) {
+    const user = await getUser('username', req.body.username);
+    if (user && (await bcrypt.compare(req.body.password, user.passwordHash))) {
         setAuthCookie(res, user);
-        res.send({'username': username});
+        res.send({ username: user.username });
     } else {
-        res.status(401).send({msg : 'Unauthorized'});
+        res.status(401).send({ msg: 'Unauthorized' });
     }
 });
 
 // Register Route
 apiRouter.post('/auth', async (req, res) => {
     if (await getUser('username', req.body.username)) {
-        res.status(409).send({msg : 'User Already Exists'});
+        res.status(409).send({ msg: 'User Already Exists' });
     } else {
         const user = await createUser(req.body.username, req.body.password);
         setAuthCookie(res, user);
 
-        res.send({'username' : user.username});
+        res.send({ username: user.username });
     }
 });
 
 // Logout Route
 apiRouter.delete('/auth', async (req, res) => {
-    const user = await getUser('authToken', req.cookies['authToken']);
+    const user = await getUser('authTokens', req.cookies['authToken']);
     if (user) {
         deleteAuthCookie(req, res, user);
-        res.send({msg : 'Logged out successfully'});
+        res.send({ msg: 'Logged out successfully' });
     } else {
-        res.status(400).send({msg : 'Invalid Request'});
+        res.status(400).send({ msg: 'Invalid Request' });
     }
 });
 
 apiRouter.get('/auth', async (req, res) => {
-    const user = await getUser('authToken', req.cookies['authToken']);
+    const user = await getUser('authTokens', req.cookies['authToken']);
     if (user) {
-        req.send({'username' : user.username});
+        res.send({ username: user.username });
     } else {
-        req.status(400).send({msg : 'Not Logged In'});
+        res.status(401).send({ msg: 'Not Logged In' });
     }
 }); 
 
@@ -74,7 +76,7 @@ apiRouter.post('/matches', getAuthState, (req, res) => {
 
 // Custom Middleware
 const getAuthState = async (req, res, next) => {
-    const user = await getUser('authToken', req.cookies['authToken']);
+    const user = await getUser('authTokens', req.cookies[authCookieName]);
     if (user) {
         next();
     } else {
@@ -86,7 +88,11 @@ const getAuthState = async (req, res, next) => {
 async function getUser(field, value) {
     if (!value) return null;
 
-    return users.find((user) => user[field] === value);
+    if (field === 'authTokens') {
+        return users.find((user) => user.authTokens.includes(value));
+    } else {
+        return users.find((user) => user[field] === value);
+    }
 }
 
 async function createUser(username, password) {
@@ -103,9 +109,10 @@ async function createUser(username, password) {
 }
 
 function setAuthCookie(res, user) {
-  user.authTokens.push(uuid.v4());
+    const authToken = uuid.v4();
+    user.authTokens.push(authToken);
 
-  res.cookie('authToken', user.token, {
+    res.cookie(authCookieName, authToken, {
     maxAge: 1000 * 60 * 60 * 24 * 30,
     secure: true,
     httpOnly: true,
@@ -114,6 +121,10 @@ function setAuthCookie(res, user) {
 }
 
 function deleteAuthCookie(req, res, user) {
-    user.authTokens.filter((token) => token != req.cookies['authToken']);
-    res.clearCookie('authToken');
+    user.authTokens.filter((token) => token != req.cookies[authCookieName]);
+    res.clearCookie(authCookieName);
 }
+
+app.listen(port, () => {
+        console.log(`Listening on port ${port}`);
+});
