@@ -70,3 +70,8 @@ This assignment gave me the most trouble of any so far. It just took quite a whi
 [Fetch Codepen](https://codepen.io/TimmyTheTaterTot/pen/raMZewN)
 
 These assignments took a bit for me to wrap my head around. I feel like compared to C or even Python, Javascript has many more systems that have strange feeling abstractions that are the way they are due to the antiquated technology that they sit upon. However, after wrestling with the code and talking to the AI for a bit, I was able to adequately figure things out and understand how these systems work to help create an awesome final product.
+
+
+### Express Service
+
+This assignment showed me some cool things that are possible using node and express. I look forward to creating routes and a database for my website, implementing each step to create a functional whole.

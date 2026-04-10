@@ -7,6 +7,13 @@ export function ChatBox({ playerName }) {
     const [events, setEvents] = React.useState([])
     const [chatMessage, setChatMessage] = React.useState('')
 
+    function sendChatMessage() {
+        if (chatMessage.trim()) {
+            GameEventBroker.addEvent(playerName, EventType.ChatMessage, chatMessage);
+            setChatMessage('');
+        }
+    }
+
     function handleEvent(event) {
         setEvents((prev) => {
             return [event, ...prev]
@@ -44,9 +51,11 @@ export function ChatBox({ playerName }) {
             </div>
             <div className="input-group">
                 <input className="form-control" type="text" placeholder='Chat Message...' 
-                onChange={(msg) => setChatMessage(msg.target.value)}/>
-                <button className="btn btn-light" type="button" 
-                onClick={() => GameEventBroker.addEvent(playerName, EventType.ChatMessage, chatMessage)}>Send</button>
+                    value={chatMessage}
+                    onChange={(msg) => setChatMessage(msg.target.value)}
+                    onKeyDown={(e) => {if (e.key == 'Enter') sendChatMessage();}}/>
+                <button className="btn btn-light" type="button"
+                    onClick={sendChatMessage}>Send</button>
             </div>
         </div>
     );
