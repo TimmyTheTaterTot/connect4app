@@ -52,10 +52,21 @@ apiRouter.delete('/auth', async (req, res) => {
     }
 });
 
+apiRouter.get('/auth', async (req, res) => {
+    const user = await getUser('authToken', req.cookies['authToken']);
+    if (user) {
+        req.send({'username' : user.username});
+    } else {
+        req.status(400).send({msg : 'Not Logged In'});
+    }
+}); 
+
+// Get recent matches list
 apiRouter.get('/matches', getAuthState, (req, res) => {
     res.send(matchResults);
 });
 
+// Add a new completed match
 apiRouter.post('/matches', getAuthState, (req, res) => {
     matchResults.push(req.body);
     res.status(204).send({});
