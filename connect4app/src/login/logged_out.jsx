@@ -3,6 +3,7 @@ import React from 'react';
 export function LoggedOut({ onLogin }) {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [errorMessage, setErrorMessage] = React.useState(null);
 
     const buttonsDisabled = !username.trim() || !password;
 
@@ -19,7 +20,7 @@ export function LoggedOut({ onLogin }) {
             onLogin(username);
         } else {
             const error = await res.json();
-            setDisplayError(`⚠ Error: ${error.msg}`);
+            setErrorMessage(`Error: ${error.msg}`);
         }
     }
 
@@ -36,7 +37,7 @@ export function LoggedOut({ onLogin }) {
             onLogin(username);
         } else {
             const error = await res.json();
-            setDisplayError(`⚠ Error: ${error.msg}`);
+            setErrorMessage(`Error: ${error.msg}`);
         }
     }
 
@@ -51,6 +52,9 @@ export function LoggedOut({ onLogin }) {
             <span className="input-group-text">Password:</span>
             <input className="form-control" onChange={(e) => setPassword(e.target.value)} type="password" placeholder="password" />
         </div>
+        {errorMessage && <div className='mb-2'>
+            <span style={{ color: '#FF5A5F' }} className='fw-bold fs-5'>{errorMessage}</span>
+        </div>}
         <button className="btn btn-primary mx-auto px-4" onClick={ () => login() } disabled={ buttonsDisabled }>Login</button>
         <button className="btn bg-mid text-white mx-auto px-4" onClick={ () => createUser() } disabled={ buttonsDisabled }>Register</button>
     </div>
