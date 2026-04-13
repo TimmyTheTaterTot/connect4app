@@ -75,3 +75,7 @@ These assignments took a bit for me to wrap my head around. I feel like compared
 ### Express Service
 
 This assignment showed me some cool things that are possible using node and express. I look forward to creating routes and a database for my website, implementing each step to create a functional whole.
+
+### Simon/Startup Service
+
+I found these assignments actually very rewarding and enjoyable. I have all the pieces organized in my program, so iterating and adding new features is pretty smooth and enjoyable. It makes the whole process of iterating and adding functionality quite rewarding. I have learned more about promises and async workflows, as well as apis and fetch requests. I overall feel a lot more comfortable with all the different systems. I still can't say I exactly enjoy the interative process of CSS, but that is largely because I don't really know all of the options off the top of my head or easily at hand, so finding the right functions to make it do what I want it to do can be frustrating. That is especially true since I have a habit of harshly avoiding what feels like bloated classes and definitions.
