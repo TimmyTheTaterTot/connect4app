@@ -11,7 +11,9 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 // temp database
 const users = [];
 const matchResults = [];
-const playerRankings = [];
+
+let leaderboardData = [];
+let cachedResultsLength = 0;
 
 // Custom Middleware
 const getAuthState = async (req, res, next) => {
@@ -76,20 +78,13 @@ apiRouter.get('/auth', async (req, res) => {
 
 // Get recent matches list
 apiRouter.get('/matches', getAuthState, (req, res) => {
-    const topPlayers = [...users];
-    topPlayers.sort((p) => p.gameRecord.wins / p.gameRecord.games);
-    topPlayers.slice(0, 10);
 
-    topPlayerData = [];
-    for (const p of topPlayers) {
-        topPlayerData.push({
-            name: p.username,
-            wins: p.gameRecord.wins,
-            losses: p.gameRecord.losses,
-            games: p.gameRecord.games
-        })
+    // Check for cache miss and update data if so
+    if (matchResults.length != cachedResultsLength) {
+        formatLeaderboardData();
     }
-    res.send(topPlayerData);
+
+    res.send(leaderboardData);
 });
 
 // Add a new completed match
@@ -167,4 +162,20 @@ async function processGameResult(req) {
     losingPlayer.gameRecord.games++;
 
     return true;
+}
+
+function formatLeaderboardData() {
+    const topPlayers = [...users];
+    topPlayers.sort((p) => p.gameRecord.wins / p.gameRecord.games);
+    topPlayers.slice(0, 10);
+
+    leaderboardData = [];
+    for (const p of topPlayers) {
+        leaderboardData.push({
+            name: p.username,
+            wins: p.gameRecord.wins,
+            losses: p.gameRecord.losses,
+            games: p.gameRecord.games
+        })
+    }
 }
