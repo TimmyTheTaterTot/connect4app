@@ -94,9 +94,9 @@ apiRouter.post('/matches', getAuthState, async (req, res) => {
 
     if (result == null) {
         res.status(400).send({ msg: 'Error occured while processing game results'});
+    } else {
+        res.status(204).send({});
     }
-
-    res.status(204).send({});
 });
 
 // Helper functions
