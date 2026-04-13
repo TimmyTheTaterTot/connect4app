@@ -22,50 +22,50 @@ function findColumnTopSpace (x, y, gameGrid) {
         return [x, y];
     }
 
-    function checkWinInDir (x, y, xdir, ydir, gameGrid, playerTurn) {
-        if (x + xdir < 0 || x + xdir > ROWS - 1 
-            || y + ydir < 0 || y + ydir > COLS - 1) {
-            return 0;
-        }
-
-        if (gameGrid[x + xdir][y + ydir] === playerTurn) {
-            return 1 + checkWinInDir(x + xdir, y + ydir, xdir, ydir, gameGrid, playerTurn);
-        }
-
+function checkWinInDir (x, y, xdir, ydir, gameGrid, playerTurn) {
+    if (x + xdir < 0 || x + xdir > ROWS - 1 
+        || y + ydir < 0 || y + ydir > COLS - 1) {
         return 0;
     }
 
-    function checkForWin (x, y, gameGrid, playerTurn) {
-        // check for horizontal win
-        if (1 + checkWinInDir(x, y, 1, 0, gameGrid, playerTurn) 
-              + checkWinInDir(x, y, -1, 0, gameGrid, playerTurn) > 3) {
-            console.log("horizontal win!");
-            return "horizontal win";
-        }
-
-        // check for vertical win
-        if (1 + checkWinInDir(x, y, 0, 1, gameGrid, playerTurn) 
-              + checkWinInDir(x, y, 0, -1, gameGrid, playerTurn) > 3) {
-            console.log("vertical win!");
-            return "vertical win";
-        }
-
-        // check for '/' win
-        if (1 + checkWinInDir(x, y, 1, 1, gameGrid, playerTurn) 
-              + checkWinInDir(x, y, -1, -1, gameGrid, playerTurn) > 3) {
-            console.log("/ win!");
-            return "/ win";
-        }
-
-        // check for '\' win
-        if (1 + checkWinInDir(x, y, 1, -1, gameGrid, playerTurn) 
-              + checkWinInDir(x, y, -1, 1, gameGrid, playerTurn) > 3) {
-            console.log("\\ win!");
-            return "\\ win";
-        }
-
-        return false;
+    if (gameGrid[x + xdir][y + ydir] === playerTurn) {
+        return 1 + checkWinInDir(x + xdir, y + ydir, xdir, ydir, gameGrid, playerTurn);
     }
+
+    return 0;
+}
+
+function checkForWin (x, y, gameGrid, playerTurn) {
+    // check for horizontal win
+    if (1 + checkWinInDir(x, y, 1, 0, gameGrid, playerTurn) 
+            + checkWinInDir(x, y, -1, 0, gameGrid, playerTurn) > 3) {
+        console.log("horizontal win!");
+        return "horizontal win";
+    }
+
+    // check for vertical win
+    if (1 + checkWinInDir(x, y, 0, 1, gameGrid, playerTurn) 
+            + checkWinInDir(x, y, 0, -1, gameGrid, playerTurn) > 3) {
+        console.log("vertical win!");
+        return "vertical win";
+    }
+
+    // check for '/' win
+    if (1 + checkWinInDir(x, y, 1, 1, gameGrid, playerTurn) 
+            + checkWinInDir(x, y, -1, -1, gameGrid, playerTurn) > 3) {
+        console.log("/ win!");
+        return "/ win";
+    }
+
+    // check for '\' win
+    if (1 + checkWinInDir(x, y, 1, -1, gameGrid, playerTurn) 
+            + checkWinInDir(x, y, -1, 1, gameGrid, playerTurn) > 3) {
+        console.log("\\ win!");
+        return "\\ win";
+    }
+
+    return false;
+}
 
 // TODO: Game win logic
 export function GameBoard(){

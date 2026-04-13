@@ -18,7 +18,7 @@ export function Leaderboard() {
                 <tr key={i}>
                     <td>{i}</td>
                     <td>{player.name}</td>
-                    <td>{player.elo}</td>
+                    <td>Coming Soon...</td>
                     <td>{player.wins}</td>
                     <td>{player.losses}</td>
                     <td>{(player.wins/player.gamesPlayed).toString().slice(0, 5)}</td>
@@ -43,7 +43,7 @@ export function Leaderboard() {
                         <th>ELO</th>
                         <th>Wins</th>
                         <th>Losses</th>
-                        <th>W/L Ratio</th>
+                        <th>Win Rate</th>
                     </tr>
                 </thead>
                 <tbody>
