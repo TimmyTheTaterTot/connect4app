@@ -4,12 +4,16 @@ export function Leaderboard() {
     const [scores, setScores] = React.useState([]);
 
     // Load data from DB
-    React.useEffect(() => {
-        const highScores = localStorage.getItem('highScores');
-        if (highScores) {
-            setScores(JSON.parse(highScores));
-        }
-    }, []);
+    React.useEffect(() => {(async () => {
+        // const highScores = localStorage.getItem('highScores');
+        // if (highScores) {
+        //     setScores(JSON.parse(highScores));
+        // }
+        const res = await fetch('/api/matches', {
+            method: 'GET',
+        });
+        setScores(await res.json())
+    })()}, []);
 
     const scoresList = [];
     if (scores.length > 0) {
@@ -21,7 +25,7 @@ export function Leaderboard() {
                     <td>Coming Soon...</td>
                     <td>{player.wins}</td>
                     <td>{player.losses}</td>
-                    <td>{(player.wins/player.gamesPlayed).toString().slice(0, 5)}</td>
+                    <td>{((player.wins/player.games)*100).toString().slice(0, 5)}%</td>
                 </tr>
             );
         }

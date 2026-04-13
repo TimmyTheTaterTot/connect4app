@@ -17,7 +17,7 @@ export function Play({ username }) {
                 <PlayerTile playerName={ username } />
                 <PlayerTile playerName="opponent" />
             </div>
-            <GameBoard />
+            <GameBoard playerName={ username }/>
             <ChatBox playerName={ username }/>
         </div>
     </main>

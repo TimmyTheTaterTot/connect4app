@@ -11,6 +11,7 @@ const port = process.argv.length > 2 ? process.argv[2] : 4000;
 // temp database
 const users = [];
 const matchResults = [];
+const playerRankings = [];
 
 // Custom Middleware
 const getAuthState = async (req, res, next) => {
@@ -75,14 +76,33 @@ apiRouter.get('/auth', async (req, res) => {
 
 // Get recent matches list
 apiRouter.get('/matches', getAuthState, (req, res) => {
-    res.send(matchResults);
+    const topPlayers = [...users];
+    topPlayers.sort((p) => p.gameRecord.wins / p.gameRecord.games);
+    topPlayers.slice(0, 10);
+
+    topPlayerData = [];
+    for (const p of topPlayers) {
+        topPlayerData.push({
+            name: p.username,
+            wins: p.gameRecord.wins,
+            losses: p.gameRecord.losses,
+            games: p.gameRecord.games
+        })
+    }
+    res.send(topPlayerData);
 });
 
 // Add a new completed match
-apiRouter.post('/matches', getAuthState, (req, res) => {
+apiRouter.post('/matches', getAuthState, async (req, res) => {
     matchResults.push(req.body);
+    const result = await processGameResult(req);
+
+    if (result == null) {
+        res.status(400).send({ msg: 'Error occured while processing game results'});
+    }
+
     res.status(204).send({});
-})
+});
 
 // Helper functions
 async function getUser(field, value) {
@@ -101,7 +121,12 @@ async function createUser(username, password) {
     const user = {
         username: username,
         passwordHash: hash,
-        authTokens: []
+        authTokens: [],
+        gameRecord: {
+            wins: 0,
+            losses: 0,
+            games: 0
+        }
     };
     users.push(user);
 
@@ -128,3 +153,18 @@ function deleteAuthCookie(req, res, user) {
 app.listen(port, () => {
         console.log(`Listening on port ${port}`);
 });
+
+async function processGameResult(req) {
+    const winningPlayer = await getUser('username', req.body.winner);
+    const losingPlayer = await getUser('username', req.body.loser);
+    if (winningPlayer == null || losingPlayer == null) {
+        return null;
+    }
+
+    winningPlayer.gameRecord.wins++;
+    winningPlayer.gameRecord.games++;
+    losingPlayer.gameRecord.losses++;
+    losingPlayer.gameRecord.games++;
+
+    return true;
+}

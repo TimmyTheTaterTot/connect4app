@@ -67,8 +67,28 @@ function checkForWin (x, y, gameGrid, playerTurn) {
     return false;
 }
 
+async function sendGameResults(thisPlayer, thatPlayer, playerTurn) {
+    const res = await fetch('/api/matches', {
+        method: 'POST',
+        body: JSON.stringify({ 
+            time: Date.now(),
+            winner: (playerTurn ? thisPlayer : thatPlayer),
+            loser: (playerTurn ? thatPlayer : thisPlayer)
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        }
+    })
+
+    if (res.ok) {
+        return true;
+    } else {
+        return null;
+    }
+}
+
 // TODO: Game win logic
-export function GameBoard(){
+export function GameBoard({ playerName }){
     const [gameGrid, setGameGrid] = React.useState(Array.from({ length: ROWS }, 
         () => new Array(COLS).fill(null)));
 
@@ -112,6 +132,7 @@ export function GameBoard(){
         })
         const winCheck = checkForWin(x, y, gameGrid, playerTurn);
         if (winCheck) {
+            sendGameResults(playerName, 'opponent', playerTurn);
             GameEventBroker.addEvent('System', EventType.GameUpdate, 
             playerTurn ? 'Congratulations! You won!' : 'Opponent won. Better luck next time.');
             setInputLocked(true);
