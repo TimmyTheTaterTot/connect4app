@@ -46,7 +46,7 @@ export function LoggedIn({ username, onLogout }) {
             </div>}
             <button className="btn btn-primary mx-auto px-4" onClick={ () => navigate('/play') }>Play</button>
             <button className="btn bg-mid text-white mx-auto px-4" onClick={ () => logout() }>Log Out</button>
-            <div className="mt-5 mb-2 text-white quote-text">{quoteBody}</div>
+            <div className="mt-4 text-white quote-text">{quoteBody}</div>
             {quoteAuthor && 
                 <span className="fw-bold text-white">- {quoteAuthor}</span>
             }

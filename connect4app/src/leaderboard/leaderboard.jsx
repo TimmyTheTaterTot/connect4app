@@ -1,14 +1,23 @@
 import React from 'react';
 
+import { useNavigate } from 'react-router-dom';
+
 export function Leaderboard() {
+    const navigate = useNavigate();
+
     const [scores, setScores] = React.useState([]);
+
+    // Check if player is logged in and if not, redirect to login page
+    React.useEffect(() => {(async () => {
+        const res = await fetch('/api/auth', {
+            method: 'GET',
+        });
+
+        if (!res.ok) navigate('/');
+    })()}, []);
 
     // Load data from DB
     React.useEffect(() => {(async () => {
-        // const highScores = localStorage.getItem('highScores');
-        // if (highScores) {
-        //     setScores(JSON.parse(highScores));
-        // }
         const res = await fetch('/api/matches', {
             method: 'GET',
         });
