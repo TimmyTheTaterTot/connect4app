@@ -145,10 +145,6 @@ function deleteAuthCookie(req, res, user) {
     res.clearCookie(authCookieName);
 }
 
-app.listen(port, () => {
-        console.log(`Listening on port ${port}`);
-});
-
 async function processGameResult(req) {
     const winningPlayer = await getUser('username', req.body.winner);
     const losingPlayer = await getUser('username', req.body.loser);
@@ -179,3 +175,7 @@ function formatLeaderboardData() {
         })
     }
 }
+
+app.listen(port, () => {
+        console.log(`Listening on port ${port}`);
+});
