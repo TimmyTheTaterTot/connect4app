@@ -38,11 +38,11 @@ async function updateUserRemoveAuth(user) {
   await userCollection.updateOne({ email: user.email }, { $unset: { token: 1 } });
 }
 
-async function addScore(score) {
-  return matchCollection.insertOne(score);
+async function uploadMatchResult(match) {
+  return matchCollection.insertOne(match);
 }
 
-function getHighScores() {
+function getLeaderboard() {
   const query = { score: { $gt: 0, $lt: 900 } };
   const options = {
     sort: { score: -1 },
@@ -58,6 +58,6 @@ module.exports = {
   addUser,
   updateUser,
   updateUserRemoveAuth,
-  addScore,
-  getHighScores,
+  uploadMatchResult,
+  getLeaderboard,
 };
