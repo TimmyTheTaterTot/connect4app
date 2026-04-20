@@ -5,3 +5,5 @@ Small_Assignment_Code
 connect4app/deploy-startup.sh
 simon-*
 /login
+dist/
+**/dbConfig.json
