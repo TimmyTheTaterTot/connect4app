@@ -155,22 +155,6 @@ async function processGameResult(req) {
     return true;
 }
 
-function formatLeaderboardData() {
-    const topPlayers = [...users];
-    topPlayers.sort((p) => p.gameRecord.wins / p.gameRecord.games);
-    topPlayers.slice(0, 10);
-
-    leaderboardData = [];
-    for (const p of topPlayers) {
-        leaderboardData.push({
-            name: p.username,
-            wins: p.gameRecord.wins,
-            losses: p.gameRecord.losses,
-            games: p.gameRecord.games
-        })
-    }
-}
-
 app.listen(port, () => {
         console.log(`Listening on port ${port}`);
 });

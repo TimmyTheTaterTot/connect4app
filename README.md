@@ -79,3 +79,7 @@ This assignment showed me some cool things that are possible using node and expr
 ### Simon/Startup Service
 
 I found these assignments actually very rewarding and enjoyable. I have all the pieces organized in my program, so iterating and adding new features is pretty smooth and enjoyable. It makes the whole process of iterating and adding functionality quite rewarding. I have learned more about promises and async workflows, as well as apis and fetch requests. I overall feel a lot more comfortable with all the different systems. I still can't say I exactly enjoy the interative process of CSS, but that is largely because I don't really know all of the options off the top of my head or easily at hand, so finding the right functions to make it do what I want it to do can be frustrating. That is especially true since I have a habit of harshly avoiding what feels like bloated classes and definitions.
+
+### Simon/Startup Database
+
+These assignments weren't overly difficult, but the did definitely require me to think a bit about how my code was structured and about the flow of data. I really enjoyed getting it all to work, and I am happy with how it is working now. After I finish Websocket to have all of my technologies implemented, I'll have to go back to actually implement some of the features I have been missing from before, such as properly implementing multiplayer. It will require restructuring how I use and manipulate data, and will require quite a bit of extra work on my service, but it should be good.
