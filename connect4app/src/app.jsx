@@ -20,9 +20,9 @@ export default function App() {
                 Accept: 'application/json'
             }
         });
-        await res.json();
+        const body = await res.json();
         if (res.ok) {
-            setUsername(res.username);
+            setUsername(body.username);
             setLoginState(true);
         }
     })()}, []);
