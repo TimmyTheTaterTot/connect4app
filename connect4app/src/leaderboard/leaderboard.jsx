@@ -30,11 +30,11 @@ export function Leaderboard() {
             scoresList.push(
                 <tr key={i}>
                     <td>{i}</td>
-                    <td>{player.name}</td>
+                    <td>{player.username}</td>
                     <td>Coming Soon...</td>
                     <td>{player.wins}</td>
                     <td>{player.losses}</td>
-                    <td>{((player.wins/player.games)*100).toString().slice(0, 5)}%</td>
+                    <td>{(player.winrate*100).toString().slice(0, 5)}%</td>
                 </tr>
             );
         }

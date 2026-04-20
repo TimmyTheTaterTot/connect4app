@@ -51,7 +51,7 @@ apiRouter.post('/auth', async (req, res) => {
     if (await db.getUser(req.body.username)) {
         res.status(409).send({ msg: 'User Already Exists' });
     } else {
-        const user = await createUser(req.body.username, req.body.password);
+        const user = await createUser(res, req.body.username, req.body.password);
 
         res.send({ username: user.username });
     }
@@ -78,19 +78,13 @@ apiRouter.get('/auth', async (req, res) => {
 }); 
 
 // Get recent matches list
-apiRouter.get('/matches', getAuthState, (req, res) => {
-
-    // Check for cache miss and update data if so
-    if (matchResults.length != cachedResultsLength) {
-        formatLeaderboardData();
-    }
-
+apiRouter.get('/matches', getAuthState, async (req, res) => {
+    const leaderboardData = await db.getLeaderboard();
     res.send(leaderboardData);
 });
 
 // Add a new completed match
 apiRouter.post('/matches', getAuthState, async (req, res) => {
-    matchResults.push(req.body);
     const result = await processGameResult(req);
 
     if (result == null) {
@@ -111,7 +105,8 @@ async function createUser(res, username, password) {
         gameRecord: {
             wins: 0,
             losses: 0,
-            games: 0
+            games: 0,
+            winrate: null
         }
     };
 
@@ -139,16 +134,23 @@ function deleteAuthCookie(req, res, user) {
 }
 
 async function processGameResult(req) {
-    const winningPlayer = await getUser('username', req.body.winner);
-    const losingPlayer = await getUser('username', req.body.loser);
-    if (winningPlayer == null || losingPlayer == null) {
+    await db.uploadMatchResult(req.body);
+
+    const wP = await db.getUser(req.body.winner);
+    const lP = await db.getUser(req.body.loser);
+    if (wP == null || lP == null) {
         return null;
     }
 
-    winningPlayer.gameRecord.wins++;
-    winningPlayer.gameRecord.games++;
-    losingPlayer.gameRecord.losses++;
-    losingPlayer.gameRecord.games++;
+    wP.gameRecord.wins++;
+    wP.gameRecord.games++;
+    wP.gameRecord.winrate = wP.gameRecord.wins / wP.gameRecord.games;
+    lP.gameRecord.losses++;
+    lP.gameRecord.games++;
+    lP.gameRecord.winrate = lP.gameRecord.wins / lP.gameRecord.games;
+
+    await db.updateUser(wP);
+    await db.updateUser(lP);
 
     return true;
 }

@@ -11,19 +11,19 @@ const matchCollection = db.collection('matches');
 (async function testConnection() {
   try {
     await db.command({ ping: 1 });
-    console.log(`Connect to database`);
+    console.log(`Connected to database`);
   } catch (ex) {
     console.log(`Unable to connect to database with ${url} because ${ex.message}`);
     process.exit(1);
   }
 })();
 
-function getUser(email) {
-  return userCollection.findOne({ email: email });
+function getUser(username) {
+  return userCollection.findOne({ username: username });
 }
 
 function getUserByToken(token) {
-  return userCollection.findOne({ token: token });
+  return userCollection.findOne({ authToken: token });
 }
 
 async function addUser(user) {
@@ -31,25 +31,38 @@ async function addUser(user) {
 }
 
 async function updateUser(user) {
-  await userCollection.updateOne({ email: user.email }, { $set: user });
+  await userCollection.updateOne({ username: user.username }, { $set: user });
 }
 
 async function updateUserRemoveAuth(user) {
-  await userCollection.updateOne({ email: user.email }, { $unset: { token: 1 } });
+  await userCollection.updateOne({ username: user.username }, { $unset: { token: 1 } });
 }
 
 async function uploadMatchResult(match) {
   return matchCollection.insertOne(match);
 }
 
-function getLeaderboard() {
-  const query = { score: { $gt: 0, $lt: 900 } };
-  const options = {
-    sort: { score: -1 },
-    limit: 10,
-  };
-  const cursor = matchCollection.find(query, options);
-  return cursor.toArray();
+async function getLeaderboard() {
+  const leaderboardData = await userCollection.aggregate([
+    {
+      $match: {
+        "gameRecord.games": { $gt: 0 }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+        username: 1,
+        wins: "$gameRecord.wins",
+        losses: "$gameRecord.losses",
+        winrate: "$gameRecord.winrate"
+      }
+    },
+    { $sort: { winrate: -1 } },
+    { $limit: 10 }
+  ]).toArray();
+
+  return leaderboardData;
 }
 
 module.exports = {
