@@ -4,6 +4,7 @@ const express = require('express');
 const uuid = require('uuid');
 const db = require('./database.js');
 const app = express();
+const { wsProxy } = require('./wsProxy.js');
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
 
@@ -165,6 +166,8 @@ async function processGameResult(req) {
     return true;
 }
 
-app.listen(port, () => {
+const httpServer = app.listen(port, () => {
         console.log(`Listening on port ${port}`);
 });
+
+wsProxy(httpServer);
