@@ -1,13 +1,22 @@
 const { WebSocketServer, WebSocket } = require('ws');
+const db = require('./database.js');
+const cookie = require('cookie');
 
 function wsProxy(httpServer) {
-    const wsClients = []
+    const activeMatches = new Map();
     const wsServer = new WebSocketServer({ server: httpServer });
 
-    wsServer.on('connection', (socket) => {
+    wsServer.on('connection', async (socket, req) => {
         socket.isAlive = true;
+        socket.user = null;
+
+        const cookies = cookie.parse(req.headers.cookie || '');
+        const userAuthToken = cookies.authToken;
+        const user = userAuthToken ? await db.getUserByToken(userAuthToken) : null;
+        if (user) socket.user = user.username;
 
         socket.on('message', (data) => {
+            console.log(`socket message from user ${socket.user}: ${data}`)
             wsServer.clients.forEach((client) => {
                 if (client.readyState === WebSocket.OPEN) {
                     client.send(data);
@@ -31,12 +40,6 @@ function wsProxy(httpServer) {
             client.ping();
         });
     }, 10000);
-}
-
-function registerClientSocket(socket) {
-    const newClient = {
-
-    }
 }
 
 module.exports = { wsProxy };
