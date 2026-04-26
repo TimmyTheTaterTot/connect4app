@@ -9,7 +9,7 @@ export function ChatBox({ playerName }) {
 
     function sendChatMessage() {
         if (chatMessage.trim()) {
-            GameEventBroker.addEvent(playerName, EventType.ChatMessage, chatMessage);
+            GameEventBroker.createEvent(playerName, EventType.ChatMessage, chatMessage);
             setChatMessage('');
         }
     }
@@ -22,11 +22,6 @@ export function ChatBox({ playerName }) {
 
     React.useEffect(() => {
         GameEventBroker.addHandler(handleEvent);
-
-        GameEventBroker.addEvent('Zack', EventType.ChatMessage, 'Wow this game is fun!');
-        GameEventBroker.addEvent('Jeff', EventType.ChatMessage, 'Yeah, it is! This is my first time playing!');
-        GameEventBroker.addEvent('GameMaster', EventType.ChatMessage, 'Zack placed their piece in column 4!');
-        GameEventBroker.addEvent('System', EventType.ChatMessage, 'Servers will shutdown in 5 minutes for scheduled maintenance');
     }, []);
 
 
