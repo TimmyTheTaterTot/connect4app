@@ -20,6 +20,7 @@
 
 .messages-inner {
     margin-top: auto;
+    width: 100%;
 }
 
 .chat-message-frame {
@@ -39,7 +40,7 @@
     margin: 0px;
 }
 
-.system-message-event {
+.system-status-event {
     color: #212529;
     margin: 0px;
 }
