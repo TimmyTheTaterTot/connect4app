@@ -6,7 +6,14 @@ function wsProxy(httpServer) {
 
     wsServer.on('connection', (socket) => {
         socket.isAlive = true;
-        console.log('pong');
+
+        socket.on('message', (data) => {
+            wsServer.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(data);
+                }
+            });
+        });
 
         socket.on('pong', () => {
             socket.isAlive = true;
@@ -14,7 +21,7 @@ function wsProxy(httpServer) {
     });
 
     setInterval(() => {
-        wsServer.clients.forEach(client => {
+        wsServer.clients.forEach((client) => {
             if (!client.isAlive) {
                 client.terminate();
                 return;
@@ -22,8 +29,8 @@ function wsProxy(httpServer) {
 
             client.isAlive = false;
             client.ping();
-        }, 10000);
-    })
+        });
+    }, 10000);
 }
 
 function registerClientSocket(socket) {

@@ -24,47 +24,57 @@ class EventBroker {
         this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/ws`);
 
         this.socket.onopen = (event) => {
-            this.createEvent('System', EventType.SystemStatus, 'connected to server');
+            this.createLocalEvent('System', EventType.SystemStatus, 'connected to server');
         };
 
         this.socket.onclose = (event) => {
-            this.createEvent('System', GameEvent.SystemStatus, 'disconnected from server');
+            this.createLocalEvent('System', EventType.SystemStatus, 'disconnected from server');
         };
 
         this.socket.onmessage = async (msg) => {
             try {
                 const event = JSON.parse(await msg.data.text());
-                this.broadcastEvent(event);
+                this.localProcessEvent(event);
             } catch {}
         };
     }
 
-    createEvent (from, type, value) {
+    createLocalEvent(from, type, value) {
         const newEvent = new Event(from, type, value);
         this.events.push(newEvent);
-
-        this.broadcastEvent(newEvent);
+        this.localProcessEvent(newEvent);
     }
 
-    broadcastEvent (event) {
+    localProcessEvent(event) {
         this.handlers.forEach((handler) => handler(event));
     }
 
-    addHandler (handler) {
+    createEvent(from, type, value) {
+        const newEvent = new Event(from, type, value);
+        this.events.push(newEvent);
+        this.broadcastEvent(newEvent);
+    }
+
+    broadcastEvent(event) {
+        console.log(JSON.stringify(event));
+        this.socket.send(JSON.stringify(event));
+    }
+
+    addHandler(handler) {
         this.handlers.push(handler);
         this.events.forEach((event) => handler(event));
     }
 
-    removeHandler (handler) {
+    removeHandler(handler) {
         this.handlers = this.handlers.filter((existing) => existing != handler);
     }
 }
 
-const GameEventBroker = new EventBroker;
+const GameEventBroker = new EventBroker();
 
-// GameEventBroker.createEvent('Zack', EventType.ChatMessage, 'Wow this game is fun!');
-// GameEventBroker.createEvent('Jeff', EventType.ChatMessage, 'Yeah, it is! This is my first time playing!');
-// GameEventBroker.createEvent('GameMaster', EventType.ChatMessage, 'Zack placed their piece in column 4!');
-// GameEventBroker.createEvent('System', EventType.ChatMessage, 'Servers will shutdown in 5 minutes for scheduled maintenance');
+// GameEventBroker.createLocalEvent('Zack', EventType.ChatMessage, 'Wow this game is fun!');
+// GameEventBroker.createLocalEvent('Jeff', EventType.ChatMessage, 'Yeah, it is! This is my first time playing!');
+// GameEventBroker.createLocalEvent('GameMaster', EventType.ChatMessage, 'Zack placed their piece in column 4!');
+// GameEventBroker.createLocalEvent('System', EventType.ChatMessage, 'Servers will shutdown in 5 minutes for scheduled maintenance');
 
 export {GameEventBroker, EventType}

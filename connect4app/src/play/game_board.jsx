@@ -133,7 +133,7 @@ export function GameBoard({ playerName }){
         const winCheck = checkForWin(x, y, gameGrid, playerTurn);
         if (winCheck) {
             sendGameResults(playerName, 'opponent', playerTurn);
-            GameEventBroker.createEvent('System', EventType.GameUpdate, 
+            GameEventBroker.createLocalEvent('System', EventType.GameUpdate, 
             playerTurn ? 'Congratulations! You won!' : 'Opponent won. Better luck next time.');
             setInputLocked(true);
             setPlayerTurn(true);
