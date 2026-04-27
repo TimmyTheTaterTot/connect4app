@@ -20,6 +20,10 @@ class EventBroker {
     handlers = []
     
     constructor() {
+        this.connectWebsocket();
+    }
+
+    connectWebsocket() {
         let port = window.location.port;
         const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
         this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/ws`);
@@ -38,6 +42,27 @@ class EventBroker {
                 this.localProcessEvent(event);
             } catch {}
         };
+    }
+
+    async reconnectWebsocket() {
+        await this.closeWebsocket();
+        this.connectWebsocket();
+    }
+
+    async closeWebsocket() {
+        if (!this.socket || this.socket.readyState === WebSocket.CLOSED) return;
+
+        if (this.socket.readyState === WebSocket.CLOSING) {
+            await new Promise((resolve) => {
+                this.socket.addEventListener('close', resolve, { once: true });
+            });
+            return;
+        }
+
+        await new Promise((resolve) => {
+            this.socket.addEventListener('close', resolve, { once: true });
+            this.socket.close();
+        });
     }
 
     createLocalEvent(from, type, data) {

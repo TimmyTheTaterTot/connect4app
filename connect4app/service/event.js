@@ -6,3 +6,5 @@ const EventType = {
     GameMove: 'game-move-event',
     GameUpdate: 'game-update-event'
 };
+
+module.exports = {EventType}
