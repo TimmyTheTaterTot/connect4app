@@ -1,16 +1,17 @@
 const EventType = {
     ChatMessage: 'chat-message-event',
-    SystemStatus: 'system-status-event',
+    System: 'system-event',
+    Websocket: 'websocket-event',
     PlayerStatus: 'player-status-event',
-    PlayerMove: 'player-move-event',
+    GameMove: 'game-move-event',
     GameUpdate: 'game-update-event'
 };
 
 class Event {
-    constructor(from, type, value){
+    constructor(from, type, data){
         this.from = from;
         this.type = type;
-        this.value = value;
+        this.data = data;
     }
 }
 
@@ -24,11 +25,11 @@ class EventBroker {
         this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/ws`);
 
         this.socket.onopen = (event) => {
-            this.createLocalEvent('System', EventType.SystemStatus, 'connected to server');
+            this.createLocalEvent('System', EventType.Websocket, 'connected to server');
         };
 
         this.socket.onclose = (event) => {
-            this.createLocalEvent('System', EventType.SystemStatus, 'disconnected from server');
+            this.createLocalEvent('System', EventType.Websocket, 'disconnected from server');
         };
 
         this.socket.onmessage = async (msg) => {
@@ -39,8 +40,8 @@ class EventBroker {
         };
     }
 
-    createLocalEvent(from, type, value) {
-        const newEvent = new Event(from, type, value);
+    createLocalEvent(from, type, data) {
+        const newEvent = new Event(from, type, data);
         this.events.push(newEvent);
         this.localProcessEvent(newEvent);
     }
@@ -49,8 +50,8 @@ class EventBroker {
         this.handlers.forEach((handler) => handler(event));
     }
 
-    createEvent(from, type, value) {
-        const newEvent = new Event(from, type, value);
+    createEvent(from, type, data) {
+        const newEvent = new Event(from, type, data);
         this.events.push(newEvent);
         this.broadcastEvent(newEvent);
     }

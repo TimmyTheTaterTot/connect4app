@@ -8,7 +8,7 @@ export function Login({ loginState, changeLoginState, username }) {
   return (
     <main className="container-fluid text-center">
         <div className="bg-mid mx-auto p-5 rounded-4">
-          {loginState == true && <LoggedIn username={ username } onLogout={() => changeLoginState(username, false)}/>}
+          {loginState == true && <LoggedIn username={ username } onLogout={() => changeLoginState('', false)}/>}
           {loginState == false && <LoggedOut onLogin={(username) => changeLoginState(username, true)}/>}
         </div>
     </main>

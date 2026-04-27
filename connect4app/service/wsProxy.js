@@ -9,11 +9,7 @@ function wsProxy(httpServer) {
     wsServer.on('connection', async (socket, req) => {
         socket.isAlive = true;
         socket.user = null;
-
-        const cookies = cookie.parse(req.headers.cookie || '');
-        const userAuthToken = cookies.authToken;
-        const user = userAuthToken ? await db.getUserByToken(userAuthToken) : null;
-        if (user) socket.user = user.username;
+        await authenticateClientWS(socket, req);
 
         socket.on('message', (data) => {
             console.log(`socket message from user ${socket.user}: ${data}`)
@@ -40,6 +36,17 @@ function wsProxy(httpServer) {
             client.ping();
         });
     }, 10000);
+}
+
+async function authenticateClientWS(socket, req) {
+    const cookies = cookie.parse(req.headers.cookie || '');
+    const userAuthToken = cookies.authToken;
+    const user = userAuthToken ? await db.getUserByToken(userAuthToken) : null;
+    if (user) {
+        socket.user = user.username;
+        return 0;
+    }
+    return -1;
 }
 
 module.exports = { wsProxy };

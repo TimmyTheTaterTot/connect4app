@@ -1,5 +1,5 @@
 import React from "react";
-import { GameEventBroker, EventType } from './event_broker';
+import { GameEventBroker, EventType } from '../event_broker';
 
 import './chat_box.css';
 
@@ -30,7 +30,7 @@ export function ChatBox({ playerName }) {
         for (const [index, event] of events.entries()) {
             messagesArray.push(
                 <div key={index} className="chat-message-frame">
-                    <p className={event.type}>{event.from}: {event.value}</p>
+                    <p className={event.type}>{event.from}: {event.data}</p>
                 </div>
             );
         }

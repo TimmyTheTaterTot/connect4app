@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { GameEventBroker, EventType } from './event_broker';
+import { GameEventBroker, EventType } from '../event_broker';
 
 import './play.css';
 

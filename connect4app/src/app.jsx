@@ -5,6 +5,7 @@ import { Login } from './login/login';
 import { Play } from './play/play';
 import { Leaderboard } from './leaderboard/leaderboard';
 import { About } from './about/about';
+import { broadcastWebsocketLogin, broadcastWebsocketLogout } from './realtime/auth_ws_events';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
@@ -14,6 +15,8 @@ export default function App() {
     const [loginState, setLoginState] = React.useState(false)
 
     React.useEffect(() => {(async () => {
+        if (loginState === true) return;
+
         const res = await fetch('/api/auth', {
             method: 'GET',
             headers: {

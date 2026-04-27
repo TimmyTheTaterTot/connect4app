@@ -1,7 +1,8 @@
 const EventType = {
     ChatMessage: 'chat-message-event',
-    SystemStatus: 'system-status-event',
+    System: 'system-event',
+    Websocket: 'websocket-event',
     PlayerStatus: 'player-status-event',
-    PlayerMove: 'player-move-event',
+    GameMove: 'game-move-event',
     GameUpdate: 'game-update-event'
 };
