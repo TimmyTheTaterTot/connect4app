@@ -37,9 +37,10 @@ class EventBroker {
         };
 
         this.socket.onmessage = async (msg) => {
+            const event = JSON.parse(msg.data);
+            console.log(`new message: ${msg.data}; event: ${JSON.stringify(event)}`);
+            this.localProcessEvent(event);
             try {
-                const event = JSON.parse(await msg.data.text());
-                this.localProcessEvent(event);
             } catch {}
         };
     }

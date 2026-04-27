@@ -7,4 +7,12 @@ const EventType = {
     GameUpdate: 'game-update-event'
 };
 
-module.exports = {EventType}
+class Event {
+    constructor(from, type, data){
+        this.from = from;
+        this.type = type;
+        this.data = data;
+    }
+}
+
+module.exports = {Event, EventType}
