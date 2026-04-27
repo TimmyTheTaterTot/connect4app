@@ -7,15 +7,7 @@ const app = express();
 const { wsProxy } = require('./wsProxy.js');
 
 const port = process.argv.length > 2 ? process.argv[2] : 4000;
-
 const authCookieName = 'authToken';
-
-// temp database
-const users = [];
-const matchResults = [];
-
-let leaderboardData = [];
-let cachedResultsLength = 0;
 
 // Custom Middleware
 const getAuthState = async (req, res, next) => {
@@ -27,6 +19,7 @@ const getAuthState = async (req, res, next) => {
     }
 }
 
+// Service Middleware and Routes
 app.use(express.json()); // middleware to auto parse json http responses
 app.use(cookieParser()); // middlware to work with cookies
 app.use(express.static('public')); // middleware to serve up static files from the 'public' directory
@@ -69,6 +62,7 @@ apiRouter.delete('/auth', async (req, res) => {
     }
 });
 
+// Get Current User Route
 apiRouter.get('/auth', async (req, res) => {
     const user = await db.getUserByToken(req.cookies[authCookieName]);
     if (user) {
