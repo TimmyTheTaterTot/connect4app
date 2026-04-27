@@ -35,12 +35,27 @@
     margin: 0px;
 }
 
-.game-update-event {
+.system-event {
     color: #212529;
     margin: 0px;
 }
 
-.system-status-event {
+.websocket-event {
+    color: #212529;
+    margin: 0px;
+}
+
+.player-status-event {
+    color: #212529;
+    margin: 0px;
+}
+
+.game-move-event {
+    color: #212529;
+    margin: 0px;
+}
+
+.game-update-event {
     color: #212529;
     margin: 0px;
 }
