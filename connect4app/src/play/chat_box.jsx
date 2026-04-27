@@ -22,6 +22,9 @@ export function ChatBox({ playerName }) {
 
     React.useEffect(() => {
         GameEventBroker.addHandler(handleEvent);
+        return () => {
+            GameEventBroker.removeHandler(handleEvent);
+        };
     }, []);
 
 
