@@ -1,20 +1,16 @@
 import React from 'react';
-
 import { useNavigate } from 'react-router-dom';
 
-export function Leaderboard() {
+export function Leaderboard({ loginState, authLoading }) {
     const navigate = useNavigate();
 
     const [scores, setScores] = React.useState([]);
 
     // Check if player is logged in and if not, redirect to login page
-    React.useEffect(() => {(async () => {
-        const res = await fetch('/api/auth', {
-            method: 'GET',
-        });
-
-        if (!res.ok) navigate('/');
-    })()}, []);
+    React.useEffect(() => {
+        if (loginState === null || loginState === true) return;
+        navigate('/');
+    }, [loginState]);
 
     // Load data from DB
     React.useEffect(() => {(async () => {

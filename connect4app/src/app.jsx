@@ -11,7 +11,7 @@ import './app.css';
 
 export default function App() {
     const [username, setUsername] = React.useState('')
-    const [loginState, setLoginState] = React.useState(false)
+    const [loginState, setLoginState] = React.useState(null)
 
     React.useEffect(() => {(async () => {
         if (loginState === true) return;
@@ -26,6 +26,8 @@ export default function App() {
         if (res.ok) {
             setUsername(body.username);
             setLoginState(true);
+        } else {
+            setLoginState(false);
         }
     })()}, []);
 
@@ -68,8 +70,8 @@ export default function App() {
                     username ={ username }
                     />
                 } exact />
-                <Route path="/play" element={<Play username={ username } />} />
-                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/play" element={<Play username={ username } loginState={ loginState } />} />
+                <Route path="/leaderboard" element={<Leaderboard loginState={ loginState } />} />
                 <Route path="/about" element={<About />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
