@@ -1,11 +1,11 @@
 import React from "react";
 import { GameEventBroker, EventType } from '../event_broker';
 
-export function MenuBar({ username }) {
+export function FullscreenMenu({ username }) {
     return (
-        <div className="p-3">
-            <h2 className="text-dark">Logged in as: <span className="text-primary-emphasis">{username}</span></h2>
-            <div className="d-flex gap-2 align-items-center flex-wrap">
+        <div className="p-3" style={{margin: "18vh auto 0 auto" }}>
+            <h1 className="text-dark text-center p-3">Logged in as: <span className="text-primary-emphasis">{username}</span></h1>
+            <div className="d-flex flex-column gap-3 align-items-center">
                 <button className="btn btn-primary play-button" type="button" 
                     onClick={() => GameEventBroker.createEvent(username, EventType.PlayerStatus, 'enqueue')}>Random Match
                 </button>
