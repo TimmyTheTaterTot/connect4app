@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { GameEventBroker, EventType } from '../event_broker';
 import { GameBoard } from './game_board';
 import { PlayerTile } from './player_tiles';
 import { ChatBox } from './chat_box';
@@ -19,6 +20,28 @@ export function Play({ username, loginState, authLoading }) {
         if (loginState === null || loginState === true) return;
         navigate('/');
     }, [loginState]);
+
+    function eventListener(event) {
+        switch (event.type) {
+            case EventType.System:
+                setInfoMsg(event.data);
+                break;
+            case EventType.GameUpdate:
+                if (event.data === 'join match') {
+                    setInGame(true);
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    React.useEffect(() => {
+        GameEventBroker.addHandler(eventListener);
+        return () => GameEventBroker.removeHandler(eventListener);
+    })
+
 
     return (
     <main className="justify-content-start">

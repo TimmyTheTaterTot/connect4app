@@ -1,7 +1,7 @@
 import React from "react";
 import { GameEventBroker, EventType } from '../event_broker';
 
-export function MenuBar({ username }) {
+export function MenuBar({ username, setInfoMsg }) {
     return (
         <div className="p-3">
             <h2 className="text-dark">Logged in as: <span className="text-primary-emphasis">{username}</span></h2>

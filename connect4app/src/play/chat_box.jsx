@@ -14,17 +14,15 @@ export function ChatBox({ playerName }) {
         }
     }
 
-    function handleEvent(event) {
+    function eventListener(event) {
         setEvents((prev) => {
             return [event, ...prev]
         })
     }
 
     React.useEffect(() => {
-        GameEventBroker.addHandler(handleEvent);
-        return () => {
-            GameEventBroker.removeHandler(handleEvent);
-        };
+        GameEventBroker.addHandler(eventListener);
+        return () => GameEventBroker.removeHandler(eventListener);
     }, []);
 
 

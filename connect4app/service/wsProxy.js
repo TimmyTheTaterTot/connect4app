@@ -6,7 +6,7 @@ const uuid = require('uuid');
 
 function wsProxy(httpServer) {
     const activeMatches = new Map();
-    const matchQueue = [];
+    const matchQueue = new Set();
     const wsServer = new WebSocketServer({ server: httpServer });
 
     wsServer.on('connection', async (socket, req) => {
@@ -122,12 +122,14 @@ function WebsocketEventHandler(socket, event) {
 function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
     switch (event.data) {
         case 'enqueue':
-            matchQueue.push(socket);
+            matchQueue.add(socket);
+            const enqueueEvent = new Event('Matchmaker', EventType.System, 'Looking for Opponents...')
+            socket.send(JSON.stringify(enqueueEvent))
             console.log(`added ${socket.user} to play queue`);
             matchmake(matchQueue, activeMatches);
             break;
         case 'dequeue':
-            matchQueue = matchQueue.filter(s => s !== socket);
+            matchQueue = matchQueue.delete(socket);
             break;
     
         default:
@@ -136,19 +138,28 @@ function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
 }
 
 function matchmake(matchQueue, activeMatches) {
-    if (matchQueue.length < 2) return;
+    if (matchQueue.size < 2) return;
 
-    const p1 = matchQueue.shift();
-    const p2 = matchQueue.shift();    
+    const p1 = setPop(matchQueue);
+    const p2 = setPop(matchQueue);
     const match = createMatch(activeMatches);
     joinMatch(p1, match);
     joinMatch(p2, match);
     
-    const event = new Event('System', EventType.System, 
+    const playEvent = new Event('Matchmaker', EventType.GameUpdate, 'join match');
+    const chatEvent = new Event('System', EventType.System, 
         `Joined match with players ${p1.user} and ${p2.user}`);
-    match.players.forEach(p => p.send(JSON.stringify(event)));
+    match.players.forEach(p => p.send(JSON.stringify(playEvent)));
+    match.players.forEach(p => p.send(JSON.stringify(chatEvent)));
 
     return matchQueue;
+}
+
+function setPop(set) {
+    for (const v of set) {
+        set.delete(v);
+        return v;
+    }
 }
 
 module.exports = { wsProxy };
