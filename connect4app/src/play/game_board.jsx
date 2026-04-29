@@ -87,56 +87,35 @@ async function sendGameResults(thisPlayer, thatPlayer, playerTurn) {
     }
 }
 
-export function GameBoard({ playerName, turnStart }){
+function buildBoardSpacesArray (gameGrid, onSpacePressed) {
+    const grid = [];
+
+    for (let col = COLS-1, i = 0; col >= 0; col--) {
+        for (let row = 0; row < ROWS; row++) {
+            const chipClass = gameGrid[row][col] === null ? '' : gameGrid[row][col] ? 'red-chip' : 'yellow-chip';
+            grid.push(<div className={`board-space ${chipClass}`} key={i} x={row} y={col} 
+                onClick={() => {onSpacePressed(row, col)}}></div>);
+            i++;
+        }
+    }
+    return grid;
+}
+
+export function GameBoard({ playerName }){
     const [gameGrid, setGameGrid] = React.useState(Array.from({ length: ROWS }, 
         () => new Array(COLS).fill(null)));
 
-    const [inputLocked, setInputLocked] = React.useState(false);
-    const [playerTurn, setPlayerTurn] = React.useState(turnStart);
+    const [playerTurn, setPlayerTurn] = React.useState(false);
 
-    function eventListener(event) {
-        if (event.type === EventType.GameMove) {
-            placePiece(event.data.x, event.data.y);
-        }
-    }
-
-    React.useEffect(() => {
-        GameEventBroker.addHandler(eventListener);
-        // if (playerTurn) return;
-
-        // let randX = Math.floor(Math.random() * ROWS);
-        // let randY = -1;
-        // [randX, randY] = findColumnTopSpace(randX, randY, gameGrid);
-
-        // while (randY < 0) {
-        //     randX = Math.floor(Math.random() * ROWS);
-        //     [randX, randY] = findColumnTopSpace(randX, randY, gameGrid);
-        // }
-        
-        // placePiece(randX, randY);
-        return () => GameEventBroker.removeHandler(eventListener);
-    }, []);
-
-    function buildBoardSpacesArray () {
-        const grid = [];
-
-        for (let col = COLS-1, i = 0; col >= 0; col--) {
-            for (let row = 0; row < ROWS; row++) {
-                const chipClass = gameGrid[row][col] === null ? '' : gameGrid[row][col] ? 'red-chip' : 'yellow-chip';
-                grid.push(<div className={`board-space ${chipClass}`} key={i} x={row} y={col} 
-                    onClick={() => {onSpacePressed(row, col)}}></div>);
-                i++;
-            }
-        }
-        return grid;
-    }
-
-    function placePiece (x, y) {
+    const placePiece = React.useCallback((x, y) => {
         setGameGrid((prevGrid) => {
             const nextGrid = prevGrid.map((row) => [...row]);
             nextGrid[x][y] = playerTurn;
             return nextGrid;
         });
+        if (playerTurn) {
+            setPlayerTurn(false);
+        }
         // const winCheck = checkForWin(x, y, gameGrid, playerTurn);
         // if (winCheck) {
         //     sendGameResults(playerName, 'opponent', playerTurn);
@@ -146,17 +125,45 @@ export function GameBoard({ playerName, turnStart }){
         //     setPlayerTurn(true);
         //     return;
         // }
-        setPlayerTurn((prevTurn) => {
-            const nextTurn = !prevTurn;
-            console.log(`playerturn1: ${prevTurn}`);
-            console.log(`playerturn2: ${nextTurn}`);
-            return nextTurn;
-        });
-    }
+        // setPlayerTurn((prevTurn) => {return !prevTurn});
+    }, [playerTurn]);
+    
+    const eventListener = React.useCallback((event) => {
+        switch (event.type) {
+            case EventType.GameMove:
+                placePiece(event.data.x, event.data.y);
+                break;
+                case EventType.GameUpdate:
+                    if (event.data === 'your turn') {
+                    console.log('my turn!');
+                    setPlayerTurn(true);
+                }
+                break;
+        
+            default:
+                break;
+        }
+    }, [placePiece]);
 
-    function onSpacePressed (x, y) {
-        console.log(`playerturn3: ${playerTurn}`);
-        if (!playerTurn || inputLocked) {
+    React.useEffect(() => {
+        GameEventBroker.addHandler(eventListener);
+        // if (playerTurn) return;
+        
+        // let randX = Math.floor(Math.random() * ROWS);
+        // let randY = -1;
+        // [randX, randY] = findColumnTopSpace(randX, randY, gameGrid);
+        
+        // while (randY < 0) {
+        //     randX = Math.floor(Math.random() * ROWS);
+        //     [randX, randY] = findColumnTopSpace(randX, randY, gameGrid);
+        // }
+        
+        // placePiece(randX, randY);
+        return () => GameEventBroker.removeHandler(eventListener);
+    }, [eventListener]);
+
+    const onSpacePressed = React.useCallback((x, y) => {
+        if (!playerTurn) {
             return;
         }
         console.log(`tile ${x},${y} pressed`);
@@ -167,10 +174,10 @@ export function GameBoard({ playerName, turnStart }){
 
         GameEventBroker.createEvent(playerName, EventType.GameMove, {x: x, y: y});
         // placePiece(x, y);
-    }
-
-    const boardSpaces = buildBoardSpacesArray();
-
+    }, [playerTurn, gameGrid]);
+    
+    const boardSpaces = React.useMemo(() => buildBoardSpacesArray(gameGrid, onSpacePressed), [gameGrid, onSpacePressed]);
+    
     return (
         <div className="game-board bg-dark rounded-5">
             <div className="game-spaces-container p-3">

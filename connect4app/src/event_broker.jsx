@@ -29,10 +29,12 @@ class EventBroker {
         this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/ws`);
 
         this.socket.onopen = (event) => {
+            console.log('connected to server');
             this.createLocalEvent('System', EventType.Websocket, 'connected to server');
         };
 
         this.socket.onclose = (event) => {
+            console.log('disconnected from server');
             this.createLocalEvent('System', EventType.Websocket, 'disconnected from server');
         };
 
@@ -89,7 +91,6 @@ class EventBroker {
 
     addHandler(handler) {
         this.handlers.push(handler);
-        this.events.forEach((event) => handler(event));
     }
 
     removeHandler(handler) {

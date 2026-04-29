@@ -14,7 +14,6 @@ export function Play({ username, loginState }) {
     const navigate = useNavigate();
     const [inGame, setInGame] = React.useState(false);
     const [infoMsg, setInfoMsg] = React.useState(null);
-    const [turnStart, setTurnStart] = React.useState(null);
 
     // Check if player is logged in and if not, redirect to login page
     React.useEffect(() => {
@@ -29,13 +28,6 @@ export function Play({ username, loginState }) {
                 break;
             case EventType.GameUpdate:
                 if (event.data.startsWith('join match')) {
-                    if (event.data.endsWith('y')) {
-                        setTurnStart(false);
-                    } else if (event.data.endsWith('r')) {
-                        setTurnStart(true);
-                    } else {
-                        setTurnStart('oogabooga');
-                    }
                     setInGame(true);
                 }
                 break;
@@ -62,7 +54,7 @@ export function Play({ username, loginState }) {
                 <PlayerTile playerName={`${username} (y)`} />
                 <PlayerTile playerName="opponent (r)" />
             </div>
-            <GameBoard playerName={ username } turnStart={ turnStart }/>
+            <GameBoard playerName={ username } />
             <ChatBox playerName={ username } />
         </div>}
     </main>

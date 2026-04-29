@@ -1,5 +1,6 @@
 const { WebSocketServer, WebSocket } = require('ws');
 const { Event, EventType } = require('./event.js');
+const GameController = require('./gameController.js');
 const db = require('./database.js');
 const cookie = require('cookie');
 const uuid = require('uuid');
@@ -138,6 +139,11 @@ function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
             const chatEvent = new Event('System', EventType.ChatMessage, 
                 `Joined match with players ${match.players[0].user} and ${match.players[1].user}`);
             socket.send(JSON.stringify(chatEvent));
+
+            if (socket === match.controller.p0) {
+                const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
+                socket.send(JSON.stringify(nextTurnEvent));
+            }
             break;
             
     
@@ -148,23 +154,34 @@ function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
 
 function GameMoveEventHandler(socket, event, activeMatches) {
     const match = activeMatches.get(socket.matchid);
+    if (socket === match.controller.p0 && match.controller.pTurn === 0) {
+        match.controller.placePiece(event.data.x, event.data.y)        
+        match.players.forEach((p) => p.send(JSON.stringify(event)));
+        
+        const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
+        match.controller.p1.send(JSON.stringify(nextTurnEvent));
+    } else if (socket === match.controller.p1 && match.controller.pTurn === 1) {
+        match.controller.placePiece(event.data.x, event.data.y)        
+        match.players.forEach((p) => p.send(JSON.stringify(event)));
+
+        const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
+        match.controller.p0.send(JSON.stringify(nextTurnEvent));
+    }
     // check for valid move
-    match.players.forEach((p) => p.send(JSON.stringify(event)));
 }
 
 function matchmake(matchQueue, activeMatches) {
     if (matchQueue.size < 2) return;
 
+    const p0 = setPop(matchQueue);
     const p1 = setPop(matchQueue);
-    const p2 = setPop(matchQueue);
     const match = createMatch(activeMatches);
+    joinMatch(p0, match);
     joinMatch(p1, match);
-    joinMatch(p2, match);
+    match.controller = new GameController(p0, p1);
     
-    const p1Event = new Event('Matchmaker', EventType.GameUpdate, 'join match y');
-    const p2Event = new Event('Matchmaker', EventType.GameUpdate, 'join match r');
-    p1.send(JSON.stringify(p1Event));
-    p2.send(JSON.stringify(p2Event));
+    const joinEvent = new Event('Matchmaker', EventType.GameUpdate, 'join match');
+    match.players.forEach((p) => p.send(JSON.stringify(joinEvent)));
 
     return matchQueue;
 }
