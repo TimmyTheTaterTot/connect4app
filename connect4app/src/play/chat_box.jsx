@@ -15,13 +15,16 @@ export function ChatBox({ playerName }) {
     }
 
     function eventListener(event) {
-        setEvents((prev) => {
-            return [event, ...prev]
-        })
+        if (event.type === EventType.ChatMessage) {
+            setEvents((prev) => {
+                return [event, ...prev]
+            })
+        }
     }
 
     React.useEffect(() => {
         GameEventBroker.addHandler(eventListener);
+        GameEventBroker.createEvent(playerName, EventType.PlayerStatus, 'joined match');
         return () => GameEventBroker.removeHandler(eventListener);
     }, []);
 

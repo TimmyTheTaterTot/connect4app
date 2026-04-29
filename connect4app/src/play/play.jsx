@@ -10,10 +10,11 @@ import { FullscreenMenu } from './fullscreen_menu';
 
 import "./play.css";
 
-export function Play({ username, loginState, authLoading }) {
+export function Play({ username, loginState }) {
     const navigate = useNavigate();
     const [inGame, setInGame] = React.useState(false);
     const [infoMsg, setInfoMsg] = React.useState(null);
+    const [turnStart, setTurnStart] = React.useState(null);
 
     // Check if player is logged in and if not, redirect to login page
     React.useEffect(() => {
@@ -27,7 +28,14 @@ export function Play({ username, loginState, authLoading }) {
                 setInfoMsg(event.data);
                 break;
             case EventType.GameUpdate:
-                if (event.data === 'join match') {
+                if (event.data.startsWith('join match')) {
+                    if (event.data.endsWith('y')) {
+                        setTurnStart(false);
+                    } else if (event.data.endsWith('r')) {
+                        setTurnStart(true);
+                    } else {
+                        setTurnStart('oogabooga');
+                    }
                     setInGame(true);
                 }
                 break;
@@ -51,11 +59,11 @@ export function Play({ username, loginState, authLoading }) {
 
         {inGame && <div className="mx-auto p-3 game-region justify-content-between">
             <div className="player-card-area">
-                <PlayerTile playerName={ username } />
-                <PlayerTile playerName="opponent" />
+                <PlayerTile playerName={`${username} (y)`} />
+                <PlayerTile playerName="opponent (r)" />
             </div>
-            <GameBoard playerName={ username }/>
-            <ChatBox playerName={ username }/>
+            <GameBoard playerName={ username } turnStart={ turnStart }/>
+            <ChatBox playerName={ username } />
         </div>}
     </main>
   );

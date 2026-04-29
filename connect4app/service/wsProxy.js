@@ -28,6 +28,9 @@ function wsProxy(httpServer) {
                 case EventType.PlayerStatus:
                     PlayerStatusEventHandler(socket, event, matchQueue, activeMatches);
                     break;
+                case EventType.GameMove:
+                    GameMoveEventHandler(socket, event, activeMatches);
+                    break;
             
                 default:
                     break;
@@ -66,7 +69,6 @@ async function loginClientWS(socket, req) {
         socket.user = user.username;
         return 0;
     }
-    console.log('login error');
     return -1;
 }
 
@@ -131,10 +133,23 @@ function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
         case 'dequeue':
             matchQueue = matchQueue.delete(socket);
             break;
+        case 'joined match':
+            const match = activeMatches.get(socket.matchid);
+            const chatEvent = new Event('System', EventType.ChatMessage, 
+                `Joined match with players ${match.players[0].user} and ${match.players[1].user}`);
+            socket.send(JSON.stringify(chatEvent));
+            break;
+            
     
         default:
             break;
     }
+}
+
+function GameMoveEventHandler(socket, event, activeMatches) {
+    const match = activeMatches.get(socket.matchid);
+    // check for valid move
+    match.players.forEach((p) => p.send(JSON.stringify(event)));
 }
 
 function matchmake(matchQueue, activeMatches) {
@@ -146,11 +161,10 @@ function matchmake(matchQueue, activeMatches) {
     joinMatch(p1, match);
     joinMatch(p2, match);
     
-    const playEvent = new Event('Matchmaker', EventType.GameUpdate, 'join match');
-    const chatEvent = new Event('System', EventType.System, 
-        `Joined match with players ${p1.user} and ${p2.user}`);
-    match.players.forEach(p => p.send(JSON.stringify(playEvent)));
-    match.players.forEach(p => p.send(JSON.stringify(chatEvent)));
+    const p1Event = new Event('Matchmaker', EventType.GameUpdate, 'join match y');
+    const p2Event = new Event('Matchmaker', EventType.GameUpdate, 'join match r');
+    p1.send(JSON.stringify(p1Event));
+    p2.send(JSON.stringify(p2Event));
 
     return matchQueue;
 }
