@@ -22,51 +22,6 @@ function findColumnTopSpace (x, y, gameGrid) {
         return [x, y];
     }
 
-function checkWinInDir (x, y, xdir, ydir, gameGrid, playerTurn) {
-    if (x + xdir < 0 || x + xdir > ROWS - 1 
-        || y + ydir < 0 || y + ydir > COLS - 1) {
-        return 0;
-    }
-
-    if (gameGrid[x + xdir][y + ydir] === playerTurn) {
-        return 1 + checkWinInDir(x + xdir, y + ydir, xdir, ydir, gameGrid, playerTurn);
-    }
-
-    return 0;
-}
-
-function checkForWin (x, y, gameGrid, playerTurn) {
-    // check for horizontal win
-    if (1 + checkWinInDir(x, y, 1, 0, gameGrid, playerTurn) 
-            + checkWinInDir(x, y, -1, 0, gameGrid, playerTurn) > 3) {
-        console.log("horizontal win!");
-        return "horizontal win";
-    }
-
-    // check for vertical win
-    if (1 + checkWinInDir(x, y, 0, 1, gameGrid, playerTurn) 
-            + checkWinInDir(x, y, 0, -1, gameGrid, playerTurn) > 3) {
-        console.log("vertical win!");
-        return "vertical win";
-    }
-
-    // check for '/' win
-    if (1 + checkWinInDir(x, y, 1, 1, gameGrid, playerTurn) 
-            + checkWinInDir(x, y, -1, -1, gameGrid, playerTurn) > 3) {
-        console.log("/ win!");
-        return "/ win";
-    }
-
-    // check for '\' win
-    if (1 + checkWinInDir(x, y, 1, -1, gameGrid, playerTurn) 
-            + checkWinInDir(x, y, -1, 1, gameGrid, playerTurn) > 3) {
-        console.log("\\ win!");
-        return "\\ win";
-    }
-
-    return false;
-}
-
 async function sendGameResults(thisPlayer, thatPlayer, playerTurn) {
     const res = await fetch('/api/matches', {
         method: 'POST',
@@ -116,16 +71,6 @@ export function GameBoard({ playerName }){
         if (playerTurn) {
             setPlayerTurn(false);
         }
-        // const winCheck = checkForWin(x, y, gameGrid, playerTurn);
-        // if (winCheck) {
-        //     sendGameResults(playerName, 'opponent', playerTurn);
-        //     GameEventBroker.createLocalEvent('System', EventType.ChatMessage, 
-        //     playerTurn ? 'Congratulations! You won!' : 'Opponent won. Better luck next time.');
-        //     setInputLocked(true);
-        //     setPlayerTurn(true);
-        //     return;
-        // }
-        // setPlayerTurn((prevTurn) => {return !prevTurn});
     }, [playerTurn]);
     
     const eventListener = React.useCallback((event) => {
@@ -134,10 +79,7 @@ export function GameBoard({ playerName }){
                 placePiece(event.data.x, event.data.y);
                 break;
                 case EventType.GameUpdate:
-                    if (event.data === 'your turn') {
-                    console.log('my turn!');
-                    setPlayerTurn(true);
-                }
+                    if (event.data === 'your turn') setPlayerTurn(true);
                 break;
         
             default:
@@ -147,18 +89,6 @@ export function GameBoard({ playerName }){
 
     React.useEffect(() => {
         GameEventBroker.addHandler(eventListener);
-        // if (playerTurn) return;
-        
-        // let randX = Math.floor(Math.random() * ROWS);
-        // let randY = -1;
-        // [randX, randY] = findColumnTopSpace(randX, randY, gameGrid);
-        
-        // while (randY < 0) {
-        //     randX = Math.floor(Math.random() * ROWS);
-        //     [randX, randY] = findColumnTopSpace(randX, randY, gameGrid);
-        // }
-        
-        // placePiece(randX, randY);
         return () => GameEventBroker.removeHandler(eventListener);
     }, [eventListener]);
 
@@ -166,14 +96,12 @@ export function GameBoard({ playerName }){
         if (!playerTurn) {
             return;
         }
-        console.log(`tile ${x},${y} pressed`);
         [x, y] = findColumnTopSpace(x, y, gameGrid);
         if (y < 0) {
             return;
         }
 
         GameEventBroker.createEvent(playerName, EventType.GameMove, {x: x, y: y});
-        // placePiece(x, y);
     }, [playerTurn, gameGrid]);
     
     const boardSpaces = React.useMemo(() => buildBoardSpacesArray(gameGrid, onSpacePressed), [gameGrid, onSpacePressed]);

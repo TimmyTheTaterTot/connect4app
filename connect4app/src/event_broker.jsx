@@ -29,18 +29,15 @@ class EventBroker {
         this.socket = new WebSocket(`${protocol}://${window.location.hostname}:${window.location.port}/ws`);
 
         this.socket.onopen = (event) => {
-            console.log('connected to server');
             this.createLocalEvent('System', EventType.Websocket, 'connected to server');
         };
 
         this.socket.onclose = (event) => {
-            console.log('disconnected from server');
             this.createLocalEvent('System', EventType.Websocket, 'disconnected from server');
         };
 
         this.socket.onmessage = async (msg) => {
             const event = JSON.parse(msg.data);
-            console.log(`new message: ${msg.data}; event: ${JSON.stringify(event)}`);
             this.localProcessEvent(event);
             try {
             } catch {}

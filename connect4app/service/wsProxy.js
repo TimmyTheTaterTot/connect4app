@@ -154,18 +154,23 @@ function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
 
 function GameMoveEventHandler(socket, event, activeMatches) {
     const match = activeMatches.get(socket.matchid);
-    if (socket === match.controller.p0 && match.controller.pTurn === 0) {
-        match.controller.placePiece(event.data.x, event.data.y)        
+    let other = socket === match.controller.p0 ? match.controller.p1 : match.controller.p0;
+
+    if (socket === match.controller.p0 && match.controller.pTurn === 0 || 
+        socket === match.controller.p1 && match.controller.pTurn === 1) {
+        const gameResult = match.controller.placePiece(event.data.x, event.data.y)        
         match.players.forEach((p) => p.send(JSON.stringify(event)));
         
-        const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
-        match.controller.p1.send(JSON.stringify(nextTurnEvent));
-    } else if (socket === match.controller.p1 && match.controller.pTurn === 1) {
-        match.controller.placePiece(event.data.x, event.data.y)        
-        match.players.forEach((p) => p.send(JSON.stringify(event)));
-
-        const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
-        match.controller.p0.send(JSON.stringify(nextTurnEvent));
+        if (!gameResult) {
+            const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
+            other.send(JSON.stringify(nextTurnEvent));
+        } else {
+            const winEvent = new Event('System', EventType.ChatMessage, 'You won!');
+            const loseEvent = new Event('System', EventType.ChatMessage, 'You lost :(');
+            socket.send(JSON.stringify(winEvent));
+            other.send(JSON.stringify(loseEvent))
+            delete match.controller;
+        }
     }
     // check for valid move
 }
