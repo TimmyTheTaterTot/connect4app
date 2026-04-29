@@ -136,6 +136,12 @@ function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
             break;
         case 'joined match':
             const match = activeMatches.get(socket.matchid);
+            
+            match.players[0].send(JSON.stringify(
+                new Event(match.players[1].user, EventType.System, 'set opponent name')));
+            match.players[1].send(JSON.stringify(
+                new Event(match.players[0].user, EventType.System, 'set opponent name')));
+
             const chatEvent = new Event('System', EventType.ChatMessage, 
                 `Joined match with players ${match.players[0].user} and ${match.players[1].user}`);
             socket.send(JSON.stringify(chatEvent));

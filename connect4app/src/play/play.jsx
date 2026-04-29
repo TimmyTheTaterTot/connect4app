@@ -14,6 +14,7 @@ export function Play({ username, loginState }) {
     const navigate = useNavigate();
     const [inGame, setInGame] = React.useState(false);
     const [infoMsg, setInfoMsg] = React.useState(null);
+    const [oppName, setOppName] = React.useState('Loading...');
 
     // Check if player is logged in and if not, redirect to login page
     React.useEffect(() => {
@@ -24,7 +25,11 @@ export function Play({ username, loginState }) {
     function eventListener(event) {
         switch (event.type) {
             case EventType.System:
-                setInfoMsg(event.data);
+                if (event.data === 'set opponent name') {
+                    setOppName(event.from);
+                } else {
+                    setInfoMsg(event.data);
+                }
                 break;
             case EventType.GameUpdate:
                 if (event.data.startsWith('join match')) {
@@ -46,13 +51,13 @@ export function Play({ username, loginState }) {
     return (
     <main className="justify-content-start">
         {!inGame && <FullscreenMenu username={ username } setInfoMsg={ setInfoMsg }/>}
-        {!inGame && infoMsg && <h4 className="p-2 text-center">{infoMsg}</h4>}
+        {!inGame && infoMsg && <h4 className="p-2 text-center">{ infoMsg }</h4>}
         {inGame && <MenuBar username={ username } setInfoMsg={ setInfoMsg } />}
 
         {inGame && <div className="mx-auto p-3 game-region justify-content-between">
             <div className="player-card-area">
-                <PlayerTile playerName={`${username} (r)`} />
-                <PlayerTile playerName="opponent (y)" />
+                <PlayerTile playerName={ username } />
+                <PlayerTile playerName={ oppName } />
             </div>
             <GameBoard playerName={ username } />
             <ChatBox playerName={ username } />
