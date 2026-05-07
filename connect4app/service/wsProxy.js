@@ -189,7 +189,7 @@ function matchmake(matchQueue, activeMatches) {
     const match = createMatch(activeMatches);
     joinMatch(p0, match);
     joinMatch(p1, match);
-    match.controller = new GameController(p0, p1);
+    match.controller = new GameController(p0, p1, uploadMatchResult);
     
     const joinEvent = new Event('Matchmaker', EventType.GameUpdate, 'join match');
     match.players.forEach((p) => p.send(JSON.stringify(joinEvent)));
@@ -197,11 +197,46 @@ function matchmake(matchQueue, activeMatches) {
     return matchQueue;
 }
 
+async function uploadMatchResult(winner, loser) {
+    const matchResult = { 
+            time: Date.now(),
+            winner: winner,
+            loser: loser,
+        }
+    db.uploadMatchResult(matchResult).catch(err => console.error('match result upload failed:', err));
+
+    const wP = await db.getUser(winner);
+    const lP = await db.getUser(loser);
+    if (wP == null || lP == null) {
+        console.error(`Unable to find one or both players:\nwP: ${wP?.username}\nlP: ${lP?.username}`);
+        return null;
+    }
+
+    wP.gameRecord.wins++;
+    wP.gameRecord.games++;
+    wP.gameRecord.winrate = wP.gameRecord.wins / wP.gameRecord.games;
+    lP.gameRecord.losses++;
+    lP.gameRecord.games++;
+    lP.gameRecord.winrate = lP.gameRecord.wins / lP.gameRecord.games;
+
+    db.updateUser(wP).catch(err => console.error('player update failed:', err));
+    db.updateUser(lP).catch(err => console.error('player update failed:', err));
+
+    return true;
+}
+
 function setPop(set) {
     for (const v of set) {
         set.delete(v);
         return v;
     }
+}
+
+function safeSend(sock, msg) {
+    if (sock.readyState !== Websocket.OPEN) {
+        console.log(`Unable to send socket message. Socket state: ${String(socket.readyState)}`);
+    }
+    sock.send(msg);
 }
 
 module.exports = { wsProxy };

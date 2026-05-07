@@ -79,15 +79,15 @@ apiRouter.get('/matches', getAuthState, async (req, res) => {
 });
 
 // Add a new completed match
-apiRouter.post('/matches', getAuthState, async (req, res) => {
-    const result = await processGameResult(req);
+// apiRouter.post('/matches', getAuthState, async (req, res) => {
+//     const result = await processGameResult(req);
 
-    if (result == null) {
-        res.status(400).send({ msg: 'Error occured while processing game results'});
-    } else {
-        res.status(204).send({});
-    }
-});
+//     if (result == null) {
+//         res.status(400).send({ msg: 'Error occured while processing game results'});
+//     } else {
+//         res.status(204).send({});
+//     }
+// });
 
 // Default error handler
 app.use(function (err, req, res, next) {
@@ -136,28 +136,6 @@ function setAuthCookie(res, user) {
 function deleteAuthCookie(req, res, user) {
     db.updateUserRemoveAuth(user);
     res.clearCookie(authCookieName);
-}
-
-async function processGameResult(req) {
-    await db.uploadMatchResult(req.body);
-
-    const wP = await db.getUser(req.body.winner);
-    const lP = await db.getUser(req.body.loser);
-    if (wP == null || lP == null) {
-        return null;
-    }
-
-    wP.gameRecord.wins++;
-    wP.gameRecord.games++;
-    wP.gameRecord.winrate = wP.gameRecord.wins / wP.gameRecord.games;
-    lP.gameRecord.losses++;
-    lP.gameRecord.games++;
-    lP.gameRecord.winrate = lP.gameRecord.wins / lP.gameRecord.games;
-
-    await db.updateUser(wP);
-    await db.updateUser(lP);
-
-    return true;
 }
 
 const httpServer = app.listen(port, () => {

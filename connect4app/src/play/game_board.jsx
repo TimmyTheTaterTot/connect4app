@@ -25,11 +25,7 @@ function findColumnTopSpace (x, y, gameGrid) {
 async function sendGameResults(thisPlayer, thatPlayer, playerTurn) {
     const res = await fetch('/api/matches', {
         method: 'POST',
-        body: JSON.stringify({ 
-            time: Date.now(),
-            winner: (playerTurn ? thisPlayer : thatPlayer),
-            loser: (playerTurn ? thatPlayer : thisPlayer)
-        }),
+        body: JSON.stringify(),
         headers: {
             'Content-type': 'application/json; charset=UTF-8',
         }
