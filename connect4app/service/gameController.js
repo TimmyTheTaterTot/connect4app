@@ -2,24 +2,17 @@ const ROWS = 7;
 const COLS = 6;
 
 class GameController {
-    constructor(p0, p1, uploadMatchResult) {
+    constructor(p0, p1) {
         this.p0 = p0; // yellow for now
         this.p1 = p1; // red for now
         this.pTurn = 0;
         this.gameGrid = Array.from({ length: ROWS }, () => new Array(COLS).fill(null))
-        this.uploadMatchResult = uploadMatchResult;
     }
 
     placePiece(x, y) {
         this.gameGrid[x][y] = this.pTurn;
         const winCon = this.checkForWin(x, y);
-
-        if (winCon != false) {
-            const winner = this.pTurn === 0 ? this.p0.user : this.p1.user;
-            const loser = this.pTurn === 0 ? this.p1.user : this.p0.user;
-            this.uploadMatchResult(winner, loser)
-            .catch(err => console.error('error calling uploadMatchResult', err));
-        }
+        // winCon handling takes place in the GameMoveEventHandler function in wsProxy.js
 
         this.pTurn = this.pTurn ? 0 : 1;
         return winCon;

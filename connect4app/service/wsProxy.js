@@ -5,6 +5,10 @@ const db = require('./database.js');
 const cookie = require('cookie');
 const uuid = require('uuid');
 
+const winEvent = new Event('System', EventType.ChatMessage, 'You won!');
+const loseEvent = new Event('System', EventType.ChatMessage, 'You lost :(');
+const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
+
 function wsProxy(httpServer) {
     const activeMatches = new Map();
     const matchQueue = new Set();
@@ -36,12 +40,18 @@ function wsProxy(httpServer) {
                 default:
                     break;
             }
+        });
 
-            // wsServer.clients.forEach((client) => {
-            //     if (client.readyState === WebSocket.OPEN) {
-            //         client.send(data);
-            //     }
-            // });
+        socket.on('close', (data) => {
+            if (matchQueue.has(socket)) matchQueue.delete(socket);
+            if (socket.matchid != null) {
+                const match = activeMatches.get(socket.matchid);
+                const winner = match.players.find((p) => (p !== socket));
+                
+                const dConnEvent = new Event('System', EventType.ChatMessage, `${socket.user} disconnected.`);
+                winner.send(JSON.stringify(dConnEvent));
+                endMatch(winner, socket, socket.matchid, activeMatches);
+            }
         });
 
         socket.on('pong', () => {
@@ -147,7 +157,6 @@ function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
             socket.send(JSON.stringify(chatEvent));
 
             if (socket === match.controller.p0) {
-                const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
                 socket.send(JSON.stringify(nextTurnEvent));
             }
             break;
@@ -168,17 +177,12 @@ function GameMoveEventHandler(socket, event, activeMatches) {
         match.players.forEach((p) => p.send(JSON.stringify(event)));
         
         if (!gameResult) {
-            const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
             other.send(JSON.stringify(nextTurnEvent));
         } else {
-            const winEvent = new Event('System', EventType.ChatMessage, 'You won!');
-            const loseEvent = new Event('System', EventType.ChatMessage, 'You lost :(');
-            socket.send(JSON.stringify(winEvent));
-            other.send(JSON.stringify(loseEvent))
-            delete match.controller;
+            const lSock = match.controller.p0 === socket ? match.controller.p1 : match.controller.p0;
+            endMatch(socket, lSock, socket.matchid, activeMatches);
         }
     }
-    // check for valid move
 }
 
 function matchmake(matchQueue, activeMatches) {
@@ -189,7 +193,8 @@ function matchmake(matchQueue, activeMatches) {
     const match = createMatch(activeMatches);
     joinMatch(p0, match);
     joinMatch(p1, match);
-    match.controller = new GameController(p0, p1, uploadMatchResult);
+
+    match.controller = new GameController(p0, p1);
     
     const joinEvent = new Event('Matchmaker', EventType.GameUpdate, 'join match');
     match.players.forEach((p) => p.send(JSON.stringify(joinEvent)));
@@ -197,16 +202,31 @@ function matchmake(matchQueue, activeMatches) {
     return matchQueue;
 }
 
-async function uploadMatchResult(winner, loser) {
+function endMatch (wSock, lSock, matchid, activeMatches) {
+    safeSend(wSock, JSON.stringify(winEvent));
+    safeSend(lSock, JSON.stringify(loseEvent));
+
+    processMatchResult(wSock.user, lSock.user).catch(err => console.error(err));
+    delete wSock.matchid;
+    delete lSock.matchid;
+
+    const match = activeMatches.get(matchid);
+    activeMatches.delete(matchid);
+    delete match;
+
+    return true;
+}
+
+async function processMatchResult(wName, lName) {
     const matchResult = { 
             time: Date.now(),
-            winner: winner,
-            loser: loser,
+            winner: wName,
+            loser: lName,
         }
     db.uploadMatchResult(matchResult).catch(err => console.error('match result upload failed:', err));
 
-    const wP = await db.getUser(winner);
-    const lP = await db.getUser(loser);
+    const wP = await db.getUser(wName);
+    const lP = await db.getUser(lName);
     if (wP == null || lP == null) {
         console.error(`Unable to find one or both players:\nwP: ${wP?.username}\nlP: ${lP?.username}`);
         return null;
@@ -233,8 +253,8 @@ function setPop(set) {
 }
 
 function safeSend(sock, msg) {
-    if (sock.readyState !== Websocket.OPEN) {
-        console.log(`Unable to send socket message. Socket state: ${String(socket.readyState)}`);
+    if (sock.readyState !== WebSocket.OPEN) {
+        console.log(`Unable to send socket message. Socket state: ${String(sock.readyState)}`);
     }
     sock.send(msg);
 }

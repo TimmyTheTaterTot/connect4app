@@ -78,17 +78,6 @@ apiRouter.get('/matches', getAuthState, async (req, res) => {
     res.send(leaderboardData);
 });
 
-// Add a new completed match
-// apiRouter.post('/matches', getAuthState, async (req, res) => {
-//     const result = await processGameResult(req);
-
-//     if (result == null) {
-//         res.status(400).send({ msg: 'Error occured while processing game results'});
-//     } else {
-//         res.status(204).send({});
-//     }
-// });
-
 // Default error handler
 app.use(function (err, req, res, next) {
   res.status(500).send({ type: err.name, message: err.message });

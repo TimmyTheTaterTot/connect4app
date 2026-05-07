@@ -22,22 +22,6 @@ function findColumnTopSpace (x, y, gameGrid) {
         return [x, y];
     }
 
-async function sendGameResults(thisPlayer, thatPlayer, playerTurn) {
-    const res = await fetch('/api/matches', {
-        method: 'POST',
-        body: JSON.stringify(),
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-        }
-    })
-
-    if (res.ok) {
-        return true;
-    } else {
-        return null;
-    }
-}
-
 function buildBoardSpacesArray (gameGrid, onSpacePressed) {
     const grid = [];
 
