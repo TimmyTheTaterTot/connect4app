@@ -38,14 +38,16 @@ export function LoggedIn({ username, onLogout }) {
     }
 
     return (
-        <div>
-            <h2 className="text-light text-nowrap">Welcome to Connect 4 Club</h2>
+        <div className="d-flex flex-column align-items-center" style={{ width: "min-content" }}>
+            <h2 className="text-light text-nowrap d-inline-block">Welcome to Connect 4 Club</h2>
             <h1 className="text-light text-nowrap">{ username }</h1>
             {errorMessage && <div className='mb-2'>
                 <span style={{ color: '#FF5A5F' }} className='fw-bold fs-5'>{errorMessage}</span>
             </div>}
-            <button className="btn btn-primary mx-auto px-4" onClick={ () => navigate('/play') }>Play</button>
-            <button className="btn bg-mid text-white mx-auto px-4" onClick={ () => logout() }>Log Out</button>
+            <div>
+                <button className="btn btn-primary mx-auto px-4" onClick={ () => navigate('/play') }>Play</button>
+                <button className="btn bg-mid text-white mx-auto px-4" onClick={ () => logout() }>Log Out</button>
+            </div>
             <div className="mt-4 text-white quote-text">{quoteBody}</div>
             {quoteAuthor && 
                 <span className="fw-bold text-white">- {quoteAuthor}</span>

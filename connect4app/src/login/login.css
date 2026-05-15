@@ -1,3 +1,4 @@
 .quote-text {
-    max-width: 25vw;
+    align-self: center;
+    padding-bottom: 0.5em;
 }
