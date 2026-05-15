@@ -56,8 +56,8 @@ export function Play({ username, loginState }) {
 
         {inGame && <div className="mx-auto p-3 game-region justify-content-between">
             <div className="player-card-area">
-                <PlayerTile playerName={ username } playerTurn={ playerTurn } />
-                <PlayerTile playerName={ oppName } playerTurn={ playerTurn } />
+                <PlayerTile playerName={ username } tileClass={ playerTurn ? 'player-turn' : '' } />
+                <PlayerTile playerName={ oppName } tileClass={ playerTurn ? '' : 'opponent-turn' } />
             </div>
             <GameBoard playerName={ username } playerTurn={ playerTurn } setPlayerTurn={ setPlayerTurn } />
             <ChatBox playerName={ username } />

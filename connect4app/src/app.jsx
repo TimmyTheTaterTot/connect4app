@@ -24,7 +24,7 @@ export default function App() {
         });
         const body = await res.json();
         if (res.ok) {
-            setUsername(body.username);
+            setUsername(body.username.split('@')[0]);
             setLoginState(true);
         } else {
             setLoginState(false);
