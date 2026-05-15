@@ -2,17 +2,8 @@ import React from "react";
 
 import './play.css';
 
-export function PlayerTile({ playerName }) {
-    const [playerELO, setPlayerELO] = React.useState('...');
-
-    React.useEffect(() => {
-        const info = JSON.parse(localStorage.getItem('playerInfo'));
-        if (info && playerName in info) {
-            setPlayerELO(info[playerName])
-            return;
-        }
-        setPlayerELO("Unknown")
-    }, [])
+export function PlayerTile({ playerName, playerTurn }) {
+    const [playerELO, setPlayerELO] = React.useState("unknown");
 
     return (
         <div className="player-card rounded-4 p-3 bg-dark">

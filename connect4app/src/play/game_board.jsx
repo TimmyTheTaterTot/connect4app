@@ -36,11 +36,10 @@ function buildBoardSpacesArray (gameGrid, onSpacePressed) {
     return grid;
 }
 
-export function GameBoard({ playerName }){
+export function GameBoard({ playerName, playerTurn, setPlayerTurn, setInfoMsg }){
     const [gameGrid, setGameGrid] = React.useState(Array.from({ length: ROWS }, 
         () => new Array(COLS).fill(null)));
 
-    const [playerTurn, setPlayerTurn] = React.useState(false);
 
     const placePiece = React.useCallback((x, y) => {
         setGameGrid((prevGrid) => {
@@ -50,6 +49,7 @@ export function GameBoard({ playerName }){
         });
         if (playerTurn) {
             setPlayerTurn(false);
+            setInfoMsg(null);
         }
     }, [playerTurn]);
     
@@ -58,10 +58,6 @@ export function GameBoard({ playerName }){
             case EventType.GameMove:
                 placePiece(event.data.x, event.data.y);
                 break;
-                case EventType.GameUpdate:
-                    if (event.data === 'your turn') setPlayerTurn(true);
-                break;
-        
             default:
                 break;
         }

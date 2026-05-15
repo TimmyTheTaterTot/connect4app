@@ -15,6 +15,7 @@ export function Play({ username, loginState }) {
     const [inGame, setInGame] = React.useState(false);
     const [infoMsg, setInfoMsg] = React.useState(null);
     const [oppName, setOppName] = React.useState('Loading...');
+    const [playerTurn, setPlayerTurn] = React.useState(false);
 
     // Check if player is logged in and if not, redirect to login page
     React.useEffect(() => {
@@ -22,7 +23,7 @@ export function Play({ username, loginState }) {
         navigate('/');
     }, [loginState]);
 
-    function eventListener(event) {
+    const eventListener = React.useCallback((event) => {
         switch (event.type) {
             case EventType.System:
                 if (event.data === 'set opponent name') {
@@ -32,15 +33,14 @@ export function Play({ username, loginState }) {
                 }
                 break;
             case EventType.GameUpdate:
-                if (event.data.startsWith('join match')) {
-                    setInGame(true);
-                }
+                if (event.data === 'join match') setInGame(true);
+                else if (event.data === 'your turn') setPlayerTurn(true);
                 break;
 
             default:
                 break;
         }
-    }
+    }, []);
 
     React.useEffect(() => {
         GameEventBroker.addHandler(eventListener);
@@ -56,10 +56,10 @@ export function Play({ username, loginState }) {
 
         {inGame && <div className="mx-auto p-3 game-region justify-content-between">
             <div className="player-card-area">
-                <PlayerTile playerName={ username } />
-                <PlayerTile playerName={ oppName } />
+                <PlayerTile playerName={ username } playerTurn={ playerTurn } />
+                <PlayerTile playerName={ oppName } playerTurn={ playerTurn } />
             </div>
-            <GameBoard playerName={ username } />
+            <GameBoard playerName={ username } playerTurn={ playerTurn } setPlayerTurn={ setPlayerTurn } />
             <ChatBox playerName={ username } />
         </div>}
     </main>
