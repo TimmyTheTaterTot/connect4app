@@ -12,6 +12,7 @@ const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your tu
 function wsProxy(httpServer) {
     const activeMatches = new Map();
     const matchQueue = new Set();
+    const customMatchQueue = new Set();
     const wsServer = new WebSocketServer({ server: httpServer });
 
     wsServer.on('connection', async (socket, req) => {
@@ -31,7 +32,7 @@ function wsProxy(httpServer) {
                     ChatMessageEventHandler(socket, event, activeMatches);
                     break;
                 case EventType.PlayerStatus:
-                    PlayerStatusEventHandler(socket, event, matchQueue, activeMatches);
+                    PlayerStatusEventHandler(socket, event, matchQueue, customMatchQueue, activeMatches);
                     break;
                 case EventType.GameMove:
                     GameMoveEventHandler(socket, event, activeMatches);
@@ -107,6 +108,25 @@ function joinMatch(psock, match) {
     return match;
 }
 
+function generateCustomGameCode(code_length = 6) {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ23456789';
+    let code = '';
+    for (let i = 0; i < code_length; i++) {
+        const randidx = Math.floor(Math.random() * charset.length);
+        code += charset[randidx]; 
+    }
+    return code;
+}
+
+function createCustomGame(customMatchQueue) {
+    const newCustomGame = {
+        gameCode: generateCustomGameCode(),
+        players: new Set(),
+    }
+    customMatchQueue.add(newCustomGame);
+    return newCustomGame;
+}
+
 function ChatMessageEventHandler(socket, event, activeMatches) {
     if (socket.matchid == null) return console.log('no matchid associated with socket');
     if (activeMatches.get(socket.matchid) == null) return console.log('unable to find match');
@@ -132,7 +152,7 @@ function WebsocketEventHandler(socket, event) {
     }
 }
 
-function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
+function PlayerStatusEventHandler(socket, event, matchQueue, customMatchQueue, activeMatches) {
     switch (event.data) {
         case 'enqueue':
             matchQueue.add(socket);
@@ -143,6 +163,13 @@ function PlayerStatusEventHandler(socket, event, matchQueue, activeMatches) {
             break;
         case 'dequeue':
             matchQueue = matchQueue.delete(socket);
+            break;
+        case 'create custom game':
+            const cGame = createCustomGame(customMatchQueue)
+            cGame.players.add(socket);
+            const gameCodeEvent = new Event('Matchmaker', EventType.System, 
+                `Custom match created! Game code: ${cGame.gameCode} Waiting for opponent to join...`);
+            socket.send(JSON.stringify(gameCodeEvent));
             break;
         case 'joined match':
             const match = activeMatches.get(socket.matchid);

@@ -10,7 +10,7 @@ export function FullscreenMenu({ username, setInfoMsg }) {
                     onClick={() => GameEventBroker.createEvent(username, EventType.PlayerStatus, 'enqueue')}>Random Match
                 </button>
                 <button className="btn btn-primary play-button" type="button"
-                    onClick={() => setInfoMsg("Coming Soon!")}>Create Custom Game
+                    onClick={() => GameEventBroker.createEvent(username, EventType.PlayerStatus, 'create custom game')}>Create Custom Game
                 </button>
                 <div className="input-group flex-nowrap" style={{ width: "400px" }}>
                     <button className="btn text-white disabled input-group-text" type="button">Join Custom Game</button>
