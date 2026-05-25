@@ -169,6 +169,10 @@ function PlayerStatusEventHandler(socket, event, matchQueue, customMatchQueue, a
             if (socket.matchid != null) {
                 const match = activeMatches.get(socket.matchid);
                 const wPlayer = match.players.find(p => p != socket);
+
+                const playerLeftEvent = new Event('System', EventType.ChatMessage, `${socket.user} left the game.`);
+                wPlayer.send(JSON.stringify(playerLeftEvent));
+
                 endMatch(wPlayer, socket, socket.matchid, activeMatches);
             }
             break;
