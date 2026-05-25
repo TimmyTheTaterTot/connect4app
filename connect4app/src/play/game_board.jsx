@@ -56,7 +56,7 @@ export function GameBoard({ playerName, playerTurn, setPlayerTurn, setInfoMsg })
     const eventListener = React.useCallback((event) => {
         switch (event.type) {
             case EventType.GameMove:
-                placePiece(event.data.x, event.data.y);
+                placePiece(event.code.x, event.code.y);
                 break;
             default:
                 break;

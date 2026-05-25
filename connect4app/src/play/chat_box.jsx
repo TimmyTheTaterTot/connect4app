@@ -34,7 +34,7 @@ export function ChatBox({ playerName }) {
         for (const [index, event] of events.entries()) {
             messagesArray.push(
                 <div key={index} className="chat-message-frame">
-                    <p className={event.type}>{event.from}: {event.data}</p>
+                    <p className={event.type}>{event.from}: {event.code}</p>
                 </div>
             );
         }

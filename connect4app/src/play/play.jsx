@@ -26,15 +26,15 @@ export function Play({ username, loginState }) {
     const eventListener = React.useCallback((event) => {
         switch (event.type) {
             case EventType.System:
-                if (event.data === 'set opponent name') {
+                if (event.code === 'set opponent name') {
                     setOppName(event.from);
                 } else {
-                    setInfoMsg(event.data);
+                    setInfoMsg(event.code);
                 }
                 break;
             case EventType.GameUpdate:
-                if (event.data === 'join match') setInGame(true);
-                else if (event.data === 'your turn') setPlayerTurn(true);
+                if (event.code === 'join match') setInGame(true);
+                else if (event.code === 'your turn') setPlayerTurn(true);
                 break;
 
             default:
@@ -51,7 +51,7 @@ export function Play({ username, loginState }) {
     return (
     <main className="justify-content-start">
         {!inGame && <FullscreenMenu username={ username } setInfoMsg={ setInfoMsg }/>}
-        {!inGame && infoMsg && <h4 className="p-2 text-center">{ infoMsg }</h4>}
+        {!inGame && infoMsg && <h4 className="info-msg p-2 text-center">{ infoMsg }</h4>}
         {inGame && <MenuBar username={ username } setInfoMsg={ setInfoMsg } />}
 
         {inGame && <div className="mx-auto p-3 game-region justify-content-between">

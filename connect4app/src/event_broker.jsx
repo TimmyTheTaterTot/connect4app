@@ -8,9 +8,10 @@ const EventType = {
 };
 
 class Event {
-    constructor(from, type, data){
+    constructor(from, type, code, data = null){
         this.from = from;
         this.type = type;
+        this.code = code;
         this.data = data;
     }
 }
@@ -65,8 +66,8 @@ class EventBroker {
         });
     }
 
-    createLocalEvent(from, type, data) {
-        const newEvent = new Event(from, type, data);
+    createLocalEvent(from, type, code, data = null) {
+        const newEvent = new Event(from, type, code, data);
         this.events.push(newEvent);
         this.localProcessEvent(newEvent);
     }
@@ -75,8 +76,8 @@ class EventBroker {
         this.handlers.forEach((handler) => handler(event));
     }
 
-    createEvent(from, type, data) {
-        const newEvent = new Event(from, type, data);
+    createEvent(from, type, code, data = null) {
+        const newEvent = new Event(from, type, code, data);
         this.events.push(newEvent);
         this.broadcastEvent(newEvent);
     }

@@ -2,21 +2,35 @@ import React from "react";
 import { GameEventBroker, EventType } from '../event_broker';
 
 export function FullscreenMenu({ username, setInfoMsg }) {
+    const [inCustomLobby, setInCustomLobby] = React.useState(false);
+
     return (
         <div className="p-3" style={{margin: "18vh auto 0 auto" }}>
             <h1 className="text-dark text-center p-3">Logged in as: <span className="text-primary-emphasis">{username}</span></h1>
-            <div className="d-flex flex-column gap-3 align-items-center">
+            {!inCustomLobby && <div className="d-flex flex-column gap-3 align-items-center">
                 <button className="btn btn-primary play-button" type="button" 
                     onClick={() => GameEventBroker.createEvent(username, EventType.PlayerStatus, 'enqueue')}>Random Match
                 </button>
                 <button className="btn btn-primary play-button" type="button"
-                    onClick={() => GameEventBroker.createEvent(username, EventType.PlayerStatus, 'create custom game')}>Create Custom Game
+                    onClick={() => {
+                        GameEventBroker.createEvent(username, EventType.PlayerStatus, 'create custom game');
+                        setInCustomLobby(true);}
+                    }>Create Custom Game
                 </button>
                 <div className="input-group flex-nowrap" style={{ width: "400px" }}>
                     <button className="btn text-white disabled input-group-text" type="button">Join Custom Game</button>
                     <input className="form-control" type="text" value="Room Code" />
                 </div>
-            </div>
+            </div>}
+            {inCustomLobby && <div className="d-flex flex-column gap-3 align-items-center">
+                <button className="btn btn-primary play-button" type="button"
+                    onClick={() => {
+                        GameEventBroker.createEvent(username, EventType.PlayerStatus, 'delete custom game');
+                        setInCustomLobby(false);
+                        setInfoMsg('');}
+                    }>Leave Custom Game
+                </button>
+            </div>}
         </div>
     )
 }

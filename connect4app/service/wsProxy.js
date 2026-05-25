@@ -73,6 +73,113 @@ function wsProxy(httpServer) {
     }, 10000);
 }
 
+function ChatMessageEventHandler(socket, event, activeMatches) {
+    if (socket.matchid == null) return console.log('no matchid associated with socket');
+    if (activeMatches.get(socket.matchid) == null) return console.log('unable to find match');
+
+    const match = activeMatches.get(socket.matchid);
+    match.players.forEach(p => {
+        p.send(JSON.stringify(event));
+    });
+}
+
+function WebsocketEventHandler(socket, event) {
+    switch (event.code) {
+        case 'login':
+            console.log(`logged in ${socket.user}`);
+            break;
+        case 'logout':
+            console.log(`logging out ${socket.user}`);
+            logoutClientWS(socket);                        
+            break;
+    
+        default:
+            break;
+    }
+}
+
+function PlayerStatusEventHandler(socket, event, matchQueue, customMatchQueue, activeMatches) {
+    switch (event.code) {
+        case 'enqueue':
+            matchQueue.add(socket);
+            const enqueueEvent = new Event('Matchmaker', EventType.System, 'Looking for Opponents...')
+            socket.send(JSON.stringify(enqueueEvent))
+            console.log(`added ${socket.user} to play queue`);
+            matchmake(matchQueue, activeMatches);
+            break;
+            
+        case 'dequeue':
+            matchQueue = matchQueue.delete(socket);
+            break;
+
+        case 'create custom game':
+            const newCMatch = createCustomMatch(customMatchQueue, socket);
+            const matchCodeEvent = new Event('Matchmaker', EventType.System, 
+                `Custom match created!\nGame code: ${newCMatch.matchCode}\nWaiting for opponent to join...`);
+            socket.send(JSON.stringify(matchCodeEvent));
+            break;
+
+        case 'join custom game':
+            const cMatch = [...customMatchQueue].find(m => m.matchCode === event.data);
+            const p0 = cMatch.matchOwner;
+            const p1 = socket;
+
+            createMatch(activeMatches, p0, p1);
+
+            customMatchQueue.delete(cMatch);
+            delete p0.cMatchId;
+
+            break;
+
+        case 'delete custom game':
+            if (socket.cMatchId != null){
+                const playerMatchCode = socket.cMatchId;
+                const match = [...customMatchQueue].find(m => m.matchCode === playerMatchCode);
+                customMatchQueue.delete(match);
+                delete socket.cMatchId;
+            }
+            break;
+
+        case 'joined match':
+            const match = activeMatches.get(socket.matchid);
+            
+            match.players[0].send(JSON.stringify(
+                new Event(match.players[1].user, EventType.System, 'set opponent name')));
+            match.players[1].send(JSON.stringify(
+                new Event(match.players[0].user, EventType.System, 'set opponent name')));
+
+            const chatEvent = new Event('System', EventType.ChatMessage, 
+                `Joined match with players ${match.players[0].user} and ${match.players[1].user}`);
+            socket.send(JSON.stringify(chatEvent));
+
+            if (socket === match.controller.p0) {
+                socket.send(JSON.stringify(nextTurnEvent));
+            }
+            break;
+            
+        default:
+            break;
+    }
+}
+
+function GameMoveEventHandler(socket, event, activeMatches) {
+    const match = activeMatches.get(socket.matchid);
+    let other = socket === match.controller.p0 ? match.controller.p1 : match.controller.p0;
+
+    if (socket === match.controller.p0 && match.controller.pTurn === 0 || 
+        socket === match.controller.p1 && match.controller.pTurn === 1) {
+        const gameResult = match.controller.placePiece(event.code.x, event.code.y)        
+        match.players.forEach((p) => p.send(JSON.stringify(event)));
+        
+        if (!gameResult) {
+            other.send(JSON.stringify(nextTurnEvent));
+        } else {
+            const lSock = match.controller.p0 === socket ? match.controller.p1 : match.controller.p0;
+            endMatch(socket, lSock, socket.matchid, activeMatches);
+        }
+    }
+}
+
 async function loginClientWS(socket, req) {
     const cookies = cookie.parse(req.headers.cookie || '');
     const userAuthToken = cookies.authToken;
@@ -91,23 +198,6 @@ function logoutClientWS(socket) {
     return 0;
 }
 
-function createMatch(activeMatches) {
-    const matchid = uuid.v4();
-    const newMatch = {
-        id: matchid,
-        time: Date.now(),
-        players: [],
-    }
-    activeMatches.set(matchid, newMatch);
-    return newMatch;
-}
-
-function joinMatch(psock, match) {
-    psock.matchid = match.id;
-    match.players.push(psock);
-    return match;
-}
-
 function generateCustomGameCode(code_length = 6) {
     const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ23456789';
     let code = '';
@@ -118,98 +208,15 @@ function generateCustomGameCode(code_length = 6) {
     return code;
 }
 
-function createCustomGame(customMatchQueue) {
-    const newCustomGame = {
-        gameCode: generateCustomGameCode(),
-        players: new Set(),
+function createCustomMatch(customMatchQueue, player) {
+    const newCustomMatch = {
+        matchCode: generateCustomGameCode(),
+        matchOwner: null,
     }
-    customMatchQueue.add(newCustomGame);
-    return newCustomGame;
-}
-
-function ChatMessageEventHandler(socket, event, activeMatches) {
-    if (socket.matchid == null) return console.log('no matchid associated with socket');
-    if (activeMatches.get(socket.matchid) == null) return console.log('unable to find match');
-
-    const match = activeMatches.get(socket.matchid);
-    match.players.forEach(p => {
-        p.send(JSON.stringify(event));
-    });
-}
-
-function WebsocketEventHandler(socket, event) {
-    switch (event.data) {
-        case 'login':
-            console.log(`logged in ${socket.user}`);
-            break;
-        case 'logout':
-            console.log(`logging out ${socket.user}`);
-            logoutClientWS(socket);                        
-            break;
-    
-        default:
-            break;
-    }
-}
-
-function PlayerStatusEventHandler(socket, event, matchQueue, customMatchQueue, activeMatches) {
-    switch (event.data) {
-        case 'enqueue':
-            matchQueue.add(socket);
-            const enqueueEvent = new Event('Matchmaker', EventType.System, 'Looking for Opponents...')
-            socket.send(JSON.stringify(enqueueEvent))
-            console.log(`added ${socket.user} to play queue`);
-            matchmake(matchQueue, activeMatches);
-            break;
-        case 'dequeue':
-            matchQueue = matchQueue.delete(socket);
-            break;
-        case 'create custom game':
-            const cGame = createCustomGame(customMatchQueue)
-            cGame.players.add(socket);
-            const gameCodeEvent = new Event('Matchmaker', EventType.System, 
-                `Custom match created! Game code: ${cGame.gameCode} Waiting for opponent to join...`);
-            socket.send(JSON.stringify(gameCodeEvent));
-            break;
-        case 'joined match':
-            const match = activeMatches.get(socket.matchid);
-            
-            match.players[0].send(JSON.stringify(
-                new Event(match.players[1].user, EventType.System, 'set opponent name')));
-            match.players[1].send(JSON.stringify(
-                new Event(match.players[0].user, EventType.System, 'set opponent name')));
-
-            const chatEvent = new Event('System', EventType.ChatMessage, 
-                `Joined match with players ${match.players[0].user} and ${match.players[1].user}`);
-            socket.send(JSON.stringify(chatEvent));
-
-            if (socket === match.controller.p0) {
-                socket.send(JSON.stringify(nextTurnEvent));
-            }
-            break;
-            
-    
-        default:
-            break;
-    }
-}
-
-function GameMoveEventHandler(socket, event, activeMatches) {
-    const match = activeMatches.get(socket.matchid);
-    let other = socket === match.controller.p0 ? match.controller.p1 : match.controller.p0;
-
-    if (socket === match.controller.p0 && match.controller.pTurn === 0 || 
-        socket === match.controller.p1 && match.controller.pTurn === 1) {
-        const gameResult = match.controller.placePiece(event.data.x, event.data.y)        
-        match.players.forEach((p) => p.send(JSON.stringify(event)));
-        
-        if (!gameResult) {
-            other.send(JSON.stringify(nextTurnEvent));
-        } else {
-            const lSock = match.controller.p0 === socket ? match.controller.p1 : match.controller.p0;
-            endMatch(socket, lSock, socket.matchid, activeMatches);
-        }
-    }
+    newCustomMatch.matchOwner = player;
+    player.cMatchId = newCustomMatch.matchCode;
+    customMatchQueue.add(newCustomMatch);
+    return newCustomMatch;
 }
 
 function matchmake(matchQueue, activeMatches) {
@@ -217,16 +224,34 @@ function matchmake(matchQueue, activeMatches) {
 
     const p0 = setPop(matchQueue);
     const p1 = setPop(matchQueue);
-    const match = createMatch(activeMatches);
-    joinMatch(p0, match);
-    joinMatch(p1, match);
-
-    match.controller = new GameController(p0, p1);
-    
-    const joinEvent = new Event('Matchmaker', EventType.GameUpdate, 'join match');
-    match.players.forEach((p) => p.send(JSON.stringify(joinEvent)));
+    const match = createMatch(activeMatches, p0, p1);
 
     return matchQueue;
+}
+
+function createMatch(activeMatches, p0, p1) {
+    const matchid = uuid.v4();
+    const newMatch = {
+        id: matchid,
+        time: Date.now(),
+        players: [],
+    }
+    joinMatch(p0, newMatch);
+    joinMatch(p1, newMatch);
+    
+    newMatch.controller = new GameController(p0, p1);
+    
+    const joinEvent = new Event('Matchmaker', EventType.GameUpdate, 'join match');
+    newMatch.players.forEach((p) => p.send(JSON.stringify(joinEvent)));
+    
+    activeMatches.set(matchid, newMatch);
+    return newMatch;
+}
+
+function joinMatch(psock, match) {
+    psock.matchid = match.id;
+    match.players.push(psock);
+    return match;
 }
 
 function endMatch (wSock, lSock, matchid, activeMatches) {

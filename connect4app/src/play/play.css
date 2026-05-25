@@ -2,6 +2,10 @@
     color: #212529;
 }
 
+.info-msg {
+    white-space: pre-line;
+}
+
 .game-region {
     display: flex;
     flex-direction: row;

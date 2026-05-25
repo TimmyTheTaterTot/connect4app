@@ -8,9 +8,10 @@ const EventType = {
 };
 
 class Event {
-    constructor(from, type, data){
+    constructor(from, type, code, data = null){
         this.from = from;
         this.type = type;
+        this.code = code;
         this.data = data;
     }
 }
