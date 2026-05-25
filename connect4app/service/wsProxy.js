@@ -121,6 +121,14 @@ function PlayerStatusEventHandler(socket, event, matchQueue, customMatchQueue, a
 
         case 'join custom game':
             const cMatch = [...customMatchQueue].find(m => m.matchCode === event.data);
+            if (cMatch == null) {
+                const invalidCodeEvent = new Event('Matchmaker', EventType.System,
+                    'Error: No custom match with that id'
+                );
+                socket.send(JSON.stringify(invalidCodeEvent));
+                break;
+            }
+
             const p0 = cMatch.matchOwner;
             const p1 = socket;
 
@@ -154,6 +162,14 @@ function PlayerStatusEventHandler(socket, event, matchQueue, customMatchQueue, a
 
             if (socket === match.controller.p0) {
                 socket.send(JSON.stringify(nextTurnEvent));
+            }
+            break;
+
+        case 'leave match':
+            if (socket.matchid != null) {
+                const match = activeMatches.get(socket.matchid);
+                const wPlayer = match.players.find(p => p != socket);
+                endMatch(wPlayer, socket, socket.matchid, activeMatches);
             }
             break;
             

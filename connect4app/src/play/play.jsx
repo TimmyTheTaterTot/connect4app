@@ -33,8 +33,10 @@ export function Play({ username, loginState }) {
                 }
                 break;
             case EventType.GameUpdate:
-                if (event.code === 'join match') setInGame(true);
-                else if (event.code === 'your turn') setPlayerTurn(true);
+                if (event.code === 'join match') {
+                    setInGame(true);
+                    setInfoMsg(null);
+                } else if (event.code === 'your turn') setPlayerTurn(true);
                 break;
 
             default:
@@ -52,7 +54,7 @@ export function Play({ username, loginState }) {
     <main className="justify-content-start">
         {!inGame && <FullscreenMenu username={ username } setInfoMsg={ setInfoMsg }/>}
         {!inGame && infoMsg && <h4 className="info-msg p-2 text-center">{ infoMsg }</h4>}
-        {inGame && <MenuBar username={ username } setInfoMsg={ setInfoMsg } />}
+        {inGame && <MenuBar username={ username } setInGame={ setInGame } />}
 
         {inGame && <div className="mx-auto p-3 game-region justify-content-between">
             <div className="player-card-area">

@@ -23,7 +23,7 @@ export function FullscreenMenu({ username, setInfoMsg }) {
                 <div className="input-group flex-nowrap" style={{ width: "400px" }}>
                     <button className="btn text-white input-group-text" disabled={ customGameButtonDisabled } type="button"
                         onClick={() => {
-                            GameEventBroker.createEvent(username, EventType.PlayerStatus, 'join custom game', customGameCode);
+                            GameEventBroker.createEvent(username, EventType.PlayerStatus, 'join custom game', customGameCode.toUpperCase());
                         }}>Join Custom Game</button>
                     <input className="form-control" type="text" placeholder="Room Code"
                         onChange={e => setCustomGameCode(e.target.value)}/>
