@@ -45,6 +45,10 @@ function wsProxy(httpServer) {
 
         socket.on('close', (data) => {
             if (matchQueue.has(socket)) matchQueue.delete(socket);
+            if (socket.cmatchid != null) {
+                const cMatch = [...customMatchQueue].find(m => m.matchCode === socket.cmatchid);
+                if (cMatch != null) customMatchQueue.delete(cMatch);
+            }
             if (socket.matchid != null) {
                 const match = activeMatches.get(socket.matchid);
                 const winner = match.players.find((p) => (p !== socket));
