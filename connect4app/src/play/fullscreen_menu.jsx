@@ -3,6 +3,9 @@ import { GameEventBroker, EventType } from '../event_broker';
 
 export function FullscreenMenu({ username, setInfoMsg }) {
     const [inCustomLobby, setInCustomLobby] = React.useState(false);
+    const [customGameCode, setCustomGameCode] = React.useState('');
+    
+    const customGameButtonDisabled = !(customGameCode.length == 6);
 
     return (
         <div className="p-3" style={{margin: "18vh auto 0 auto" }}>
@@ -18,8 +21,12 @@ export function FullscreenMenu({ username, setInfoMsg }) {
                     }>Create Custom Game
                 </button>
                 <div className="input-group flex-nowrap" style={{ width: "400px" }}>
-                    <button className="btn text-white disabled input-group-text" type="button">Join Custom Game</button>
-                    <input className="form-control" type="text" value="Room Code" />
+                    <button className="btn text-white input-group-text" disabled={ customGameButtonDisabled } type="button"
+                        onClick={() => {
+                            GameEventBroker.createEvent(username, EventType.PlayerStatus, 'join custom game', customGameCode);
+                        }}>Join Custom Game</button>
+                    <input className="form-control" type="text" placeholder="Room Code"
+                        onChange={e => setCustomGameCode(e.target.value)}/>
                 </div>
             </div>}
             {inCustomLobby && <div className="d-flex flex-column gap-3 align-items-center">
