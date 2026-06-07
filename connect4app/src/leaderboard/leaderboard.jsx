@@ -12,35 +12,45 @@ export function Leaderboard({ loginState, authLoading }) {
         navigate('/');
     }, [loginState]);
 
-    // Load data from DB
+    // Load cached data then update from DB
     React.useEffect(() => {(async () => {
+        const lbCache = localStorage.getItem('lbCache');
+        if (lbCache) {
+            setScores(JSON.parse(lbCache));
+        };
+
         const res = await fetch('/api/matches', {
             method: 'GET',
         });
-        setScores(await res.json())
+        const lbUpdated = await res.json();
+        setScores(lbUpdated);
+        localStorage.setItem('lbCache', JSON.stringify(lbUpdated));
     })()}, []);
 
-    const scoresList = [];
-    if (scores.length > 0) {
-        for (const [i, player] of scores.entries()) {
-            scoresList.push(
-                <tr key={i}>
-                    <td>{i}</td>
-                    <td>{player.username}</td>
-                    <td>Coming Soon...</td>
-                    <td>{player.wins}</td>
-                    <td>{player.losses}</td>
-                    <td>{(player.winrate*100).toString().slice(0, 5)}%</td>
+    const scoresList = React.useMemo(() => {
+        const lbList = [];
+        if (scores.length > 0) {
+            for (const [i, player] of scores.entries()) {
+                lbList.push(
+                    <tr key={i}>
+                        <td>{i}</td>
+                        <td>{player.username}</td>
+                        <td>Coming Soon...</td>
+                        <td>{player.wins}</td>
+                        <td>{player.losses}</td>
+                        <td>{(player.winrate*100).toString().slice(0, 5)}%</td>
+                    </tr>
+                );
+            }
+        } else {
+            lbList.push(
+                <tr key='0' className="text-center">
+                    <td colSpan='6'>No rankings yet! Please come back after playing...</td>
                 </tr>
             );
         }
-    } else {
-        scoresList.push(
-            <tr key='0' className="text-center">
-                <td colSpan='6'>No rankings yet! Please come back after playing...</td>
-            </tr>
-        );
-    }
+        return lbList;
+    }, [scores]);
 
     return (
         <main>
