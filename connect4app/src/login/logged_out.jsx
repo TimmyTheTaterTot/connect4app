@@ -7,6 +7,11 @@ export function LoggedOut({ onLogin }) {
 
     const buttonsDisabled = !username.trim() || username.length > 24 || !password;
 
+    React.useEffect(() => {
+        if (username.length > 24) setErrorMessage('Username too long!');
+        else if (errorMessage === 'Username too long!') setErrorMessage(null);
+    }, [username]);
+
     async function login() {
         localStorage.setItem('username', username);
         const res = await fetch('/api/auth', {
