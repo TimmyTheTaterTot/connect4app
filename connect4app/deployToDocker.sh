@@ -1,3 +1,5 @@
+#!/bin/bash
+
 TAG="${1:-latest}"
 KEYS_DIR="$(cd "$(dirname "$0")/../keys" && pwd)"
 REGISTRY_USER_FILE="$KEYS_DIR/CONTAINER_REG_USER"
