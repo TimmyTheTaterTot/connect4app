@@ -9,7 +9,7 @@ export function FullscreenMenu({ username, setInfoMsg }) {
 
     return (
         <div className="p-3" style={{margin: "18vh auto 0 auto" }}>
-            <h1 className="text-dark text-center p-3">Logged in as: <span className="text-primary-emphasis">{username}</span></h1>
+            <h1 className="text-dark text-center p-3">Logged in as: <span className="text-primary-emphasis">{username.split('@')[0]}</span></h1>
             {!inCustomLobby && <div className="d-flex flex-column gap-3 align-items-center">
                 <button className="btn btn-primary play-button" type="button" 
                     onClick={() => GameEventBroker.createEvent(username, EventType.PlayerStatus, 'enqueue')}>Random Match

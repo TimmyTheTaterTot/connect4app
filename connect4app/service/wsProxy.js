@@ -53,7 +53,7 @@ function wsProxy(httpServer) {
                 const match = activeMatches.get(socket.matchid);
                 const winner = match.players.find((p) => (p !== socket));
                 
-                const dConnEvent = new Event('System', EventType.ChatMessage, `${socket.user} disconnected.`);
+                const dConnEvent = new Event('System', EventType.ChatMessage, `${stripEmail(socket.user)} disconnected.`);
                 winner.send(JSON.stringify(dConnEvent));
                 endMatch(winner, socket, socket.matchid, activeMatches);
             }
@@ -161,7 +161,7 @@ function PlayerStatusEventHandler(socket, event, matchQueue, customMatchQueue, a
                 new Event(match.players[0].user, EventType.System, 'set opponent name')));
 
             const chatEvent = new Event('System', EventType.ChatMessage, 
-                `Joined match with players ${match.players[0].user} and ${match.players[1].user}`);
+                `Joined match with players ${stripEmail(match.players[0].user)} and ${stripEmail(match.players[1].user)}`);
             socket.send(JSON.stringify(chatEvent));
 
             if (socket === match.controller.p0) {
@@ -174,7 +174,7 @@ function PlayerStatusEventHandler(socket, event, matchQueue, customMatchQueue, a
                 const match = activeMatches.get(socket.matchid);
                 const wPlayer = match.players.find(p => p != socket);
 
-                const playerLeftEvent = new Event('System', EventType.ChatMessage, `${socket.user} left the game.`);
+                const playerLeftEvent = new Event('System', EventType.ChatMessage, `${stripEmail(socket.user)} left the game.`);
                 wPlayer.send(JSON.stringify(playerLeftEvent));
 
                 endMatch(wPlayer, socket, socket.matchid, activeMatches);
@@ -319,6 +319,10 @@ async function processMatchResult(wName, lName) {
     db.updateUser(lP).catch(err => console.error('player update failed:', err));
 
     return true;
+}
+
+function stripEmail(email) {
+    return email.split('@')[0];
 }
 
 function setPop(set) {

@@ -7,7 +7,7 @@ export function PlayerTile({ playerName, tileClass }) {
 
     return (
         <div className={`player-card rounded-4 p-3 bg-dark ${tileClass}`}>
-            <h3 className="text-white">{ playerName }</h3>
+            <h3 className="text-white">{ playerName.split('@')[0] }</h3>
             <p className="text-white">Rating: { playerELO }</p>
             <div className="player-tile-buttons">
                 <button className="btn btn-secondary disabled me-1">View Profile</button>

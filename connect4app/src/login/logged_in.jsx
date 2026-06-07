@@ -40,7 +40,7 @@ export function LoggedIn({ username, onLogout }) {
     return (
         <div className="d-flex flex-column align-items-center" style={{ width: "min-content" }}>
             <h2 className="text-light text-nowrap d-inline-block">Welcome to Connect 4 Club</h2>
-            <h1 className="text-light text-nowrap">{ username }</h1>
+            <h1 className="text-light text-nowrap">{ username.split('@')[0] }</h1>
             {errorMessage && <div className='mb-2'>
                 <span style={{ color: '#FF5A5F' }} className='fw-bold fs-5'>{errorMessage}</span>
             </div>}
