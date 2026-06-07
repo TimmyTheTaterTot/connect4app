@@ -21,6 +21,14 @@
 .player-card {
     margin-top: auto;
     margin-bottom: auto;
+    width: 100%;
+    max-width: 16rem;
+}
+
+h3 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .game-board {

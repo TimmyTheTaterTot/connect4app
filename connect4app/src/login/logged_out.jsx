@@ -5,7 +5,7 @@ export function LoggedOut({ onLogin }) {
     const [password, setPassword] = React.useState('');
     const [errorMessage, setErrorMessage] = React.useState(null);
 
-    const buttonsDisabled = !username.trim() || !password;
+    const buttonsDisabled = !username.trim() || username.length > 24 || !password;
 
     async function login() {
         localStorage.setItem('username', username);
@@ -59,8 +59,8 @@ export function LoggedOut({ onLogin }) {
             {errorMessage && <div className='mb-2'>
                 <span style={{ color: '#FF5A5F' }} className='fw-bold fs-5'>{errorMessage}</span>
             </div>}
-            <button className="btn btn-primary mx-auto px-4" onClick={ () => login() } disabled={ buttonsDisabled }>Login</button>
-            <button className="btn bg-mid text-white mx-auto px-4" onClick={ () => createUser() } disabled={ buttonsDisabled }>Register</button>
+            <button className="btn btn-primary mx-auto px-4" onClick={login} disabled={ buttonsDisabled }>Login</button>
+            <button className="btn bg-mid text-white mx-auto px-4" onClick={createUser} disabled={ buttonsDisabled }>Register</button>
         </div>
     );
 }
