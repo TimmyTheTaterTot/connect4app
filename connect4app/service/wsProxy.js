@@ -5,8 +5,8 @@ const db = require('./database.js');
 const cookie = require('cookie');
 const uuid = require('uuid');
 
-const winEvent = new Event('System', EventType.ChatMessage, 'You won!');
-const loseEvent = new Event('System', EventType.ChatMessage, 'You lost :(');
+const winEvent = new Event('System', EventType.GameUpdate, 'you won');
+const loseEvent = new Event('System', EventType.GameUpdate, 'you lost');
 const nextTurnEvent = new Event('GameController', EventType.GameUpdate, 'your turn');
 
 function wsProxy(httpServer) {

@@ -4,6 +4,8 @@ import { GameEventBroker, EventType } from '../event_broker';
 import './chat_box.css';
 
 export function ChatBox({ playerName }) {
+    const sChatMessage = new Audio('/chat_message.mp3');
+    
     const [events, setEvents] = React.useState([])
     const [chatMessage, setChatMessage] = React.useState('')
 
@@ -16,6 +18,9 @@ export function ChatBox({ playerName }) {
 
     function eventListener(event) {
         if (event.type === EventType.ChatMessage) {
+            if (event.from != playerName) {
+                sChatMessage.play();
+            }
             setEvents((prev) => {
                 return [event, ...prev]
             })

@@ -11,6 +11,10 @@ import { FullscreenMenu } from './fullscreen_menu';
 import "./play.css";
 
 export function Play({ username, loginState }) {
+    const sGameLoss = new Audio('/game_loss.mp3');
+    const sGameWin = new Audio('/game_win.mp3');
+    const sJoinGame = new Audio('/join_game.mp3');
+
     const navigate = useNavigate();
     const [inGame, setInGame] = React.useState(false);
     const [infoMsg, setInfoMsg] = React.useState(null);
@@ -36,7 +40,16 @@ export function Play({ username, loginState }) {
                 if (event.code === 'join match') {
                     setInGame(true);
                     setInfoMsg(null);
-                } else if (event.code === 'your turn') setPlayerTurn(true);
+                    sJoinGame.play();
+                } else if (event.code === 'your turn') {
+                    setPlayerTurn(true);
+                } else if (event.code === 'you won') {
+                    sGameWin.play();
+                    GameEventBroker.createLocalEvent('System', EventType.ChatMessage, 'You won!');
+                } else if (event.code === 'you lost') {
+                    sGameLoss.play();
+                    GameEventBroker.createLocalEvent('System', EventType.ChatMessage, 'You lost :(');
+                }
                 break;
 
             default:
@@ -47,7 +60,7 @@ export function Play({ username, loginState }) {
     React.useEffect(() => {
         GameEventBroker.addHandler(eventListener);
         return () => GameEventBroker.removeHandler(eventListener);
-    })
+    });
 
 
     return (

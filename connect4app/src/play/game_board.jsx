@@ -37,6 +37,9 @@ function buildBoardSpacesArray (gameGrid, onSpacePressed) {
 }
 
 export function GameBoard({ playerName, playerTurn, setPlayerTurn, setInfoMsg }){
+    const sPlacePiece1 = new Audio('/place_piece_1.mp3');
+    const sPlacePiece2 = new Audio('/place_piece_2.mp3');
+
     const [gameGrid, setGameGrid] = React.useState(Array.from({ length: ROWS }, 
         () => new Array(COLS).fill(null)));
 
@@ -57,6 +60,7 @@ export function GameBoard({ playerName, playerTurn, setPlayerTurn, setInfoMsg })
         switch (event.type) {
             case EventType.GameMove:
                 placePiece(event.code.x, event.code.y);
+                sPlacePiece1.play();
                 break;
             default:
                 break;
@@ -78,6 +82,7 @@ export function GameBoard({ playerName, playerTurn, setPlayerTurn, setInfoMsg })
         }
 
         GameEventBroker.createEvent(playerName, EventType.GameMove, {x: x, y: y});
+        sPlacePiece2.play();
     }, [playerTurn, gameGrid]);
     
     const boardSpaces = React.useMemo(() => buildBoardSpacesArray(gameGrid, onSpacePressed), [gameGrid, onSpacePressed]);
